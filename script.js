@@ -1,53 +1,29 @@
-import { Player } from "./classes/Player.js";
-import { generateLevel } from "./scripts/levelGen.js";
+import { handlePlayer, updateEntities } from "./scripts/HandleEntities.js";
 
 
-const canvas = document.getElementById("root");
-const ctx = canvas.getContext("2d");
-ctx.translate(0, canvas.height);
-ctx.scale(1, -1);
-
-const player = new Player(50, 0, 30, 30, "blue", 1);
-
+export const canvas = document.getElementById("root");
+export const ctx = canvas.getContext("2d");
 
 
 
 const setWindowSize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
-    
-    if (player.x + player.width > canvas.width) {
-        player.x = canvas.width - player.width;
-    }
-    if (player.y + player.height > canvas.height) {
-        player.y = canvas.height - player.height;
-    }
-
 }
 
 setWindowSize();
 window.addEventListener("resize", setWindowSize);
 
-const keys = {};
 
-const gameLoop = () => {
+const gameLoop = (currentTime) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    player.applyGravity(canvas); 
-    player.move(keys, canvas); 
-    player.drawPlayer(ctx);
+
+    updateEntities(currentTime);
+    handlePlayer(ctx, canvas);
 
     requestAnimationFrame(gameLoop);
     
 };
 
-document.addEventListener("keydown", (event) => {
-    keys[event.key] = true;
-});
 
-document.addEventListener("keyup", (event) => {
-    keys[event.key] = false;
-});
-
-gameLoop();
+gameLoop(0);
