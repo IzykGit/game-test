@@ -4,8 +4,6 @@ import { handlePlayer, resetGame, updateEntities } from "./scripts/HandleEntitie
 export const canvas = document.getElementById("root");
 export const ctx = canvas.getContext("2d");
 
-
-
 const setWindowSize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -15,6 +13,7 @@ setWindowSize();
 window.addEventListener("resize", setWindowSize);
 
 let pause = false;
+const pauseAudio = new Audio("./sounds/pause.wav");
 
 
 const drawPauseMenu = () => {
@@ -59,6 +58,7 @@ document.addEventListener("keydown", (event) => {
             if (!pause) {
                 gameLoop(performance.now());
             } else {
+                pauseAudio.play();
                 drawPauseMenu();
             }
         }
@@ -71,6 +71,7 @@ const gameLoop = (currentTime) => {
     if(pause) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
 
     updateEntities(currentTime);
     const handler = handlePlayer(ctx, canvas);

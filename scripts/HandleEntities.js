@@ -3,11 +3,13 @@ import { Player } from "../classes/Player.js";
 import { canvas, ctx } from "../script.js";
 
 
-const player = new Player(50, 300, 32, 45, "blue", 1);
+const player = new Player(50, 300, 40, 90, "blue", 1);
 
 const entities = [];
 
 const collidingWith = new Set();
+
+const deathSound = new Audio("../sounds/death.wav");
 
 
 const isColliding = (a, b) => {
@@ -26,7 +28,7 @@ let lastSpawnTime = 0;
 const spawnEnemy = () => {
     const x = Math.random() * (canvas.width - 32); 
     const y = -30;
-    const enemy = new Entity(x, y, 32, 52, "red", true);
+    const enemy = new Entity(x, y, 40, 100, "red", true);
     entities.push(enemy);
 }
 
@@ -99,7 +101,8 @@ const keys = {};
 export const handlePlayer = () => {
 
     if(player.playerHealth === 0) {
-        return 0
+        deathSound.play();
+        return 0;
     }
 
 

@@ -126,7 +126,7 @@ export class Player {
     jump() {
         if (this.canJump && this.velocityY === 0) {
             this.jumpAudio.play(); 
-            this.velocityY = -12; 
+            this.velocityY = -20; 
             this.canJump = false; 
         }
     }
