@@ -14,11 +14,22 @@ export class Entity {
 
         this.velocityY = 0;
         this.gravityConstant = 0.5;
+
+        this.speed = 5;
+
+        this.deathAudio = new Audio("../sounds/enemyDeath.wav")
     }
 
-    move(dx = 0, dy = 0) {
-        this.x += dx;
-        this.y += dy; 
+    move(playerX, playerY) {
+        const dx = playerX - this.x;
+        const dy = playerY - this.y;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 0 && this.velocityY === 0) {
+            this.x += (dx / distance) * this.speed;
+
+        }
     }
 
     applyGravity(canvas) {
@@ -33,20 +44,24 @@ export class Entity {
     }
 
 
-    handleCollide(collidingWith) {
-        for (const entity of collidingWith) {
-            const collideState = collisionCheck(this, entity);
+    handleCollide(entity) {
+        const collideState = collisionCheck(this, entity);
 
-            if (collideState === 4) { 
-                this.y = entity.y - this.height; 
-                this.velocityY = 0; 
+            switch(collideState) {
+                case 1:
+                    this.x = entity.x + entity.width;
+                    break;
+                case 2:
+                    this.x = entity.x - this.width;
+                    break;
+                case 3:
+                    this.y = entity.y + entity.height; 
+                    this.velocityY = 0;
+                    break;
+                case 4:
+                    this.y = entity.y - this.height; 
+                    this.velocityY = 0; 
             }
-
-            else if (collideState === 3) { 
-                this.y = entity.y + entity.height; 
-                this.velocityY = 0; 
-            }
-        }
     }
     
 

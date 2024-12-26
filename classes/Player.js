@@ -20,6 +20,7 @@ export class Player {
         this.hasCollided = false;
 
         this.jumpAudio = new Audio('../sounds/jump.wav')
+        this.damageAudio = new Audio('../sounds/hitHurt.wav')
     }
 
     drawPlayer(ctx) {
@@ -37,6 +38,15 @@ export class Player {
 
         ctx.fillStyle = "green"; 
         ctx.fillRect(50, 50, barWidth * healthPercentage, barHeight);
+    }
+
+    takeDamage() {
+        if (this.playerHealth > 0) {
+            this.playerHealth -= 10;
+        }
+        else {
+            return;
+        }
     }
 
     applyGravity(canvas) {
@@ -77,6 +87,10 @@ export class Player {
                     this.velocityX = Math.abs(this.velocityX) + 20;
                     this.velocityY = Math.abs(this.velocityY) - 5;
                     this.velocityX *= this.friction;
+
+                    this.damageAudio.currentTime = 0;
+                    this.damageAudio.play();
+                    this.takeDamage();
                     this.hasCollided = true;
                     break;
     
@@ -85,6 +99,10 @@ export class Player {
                     this.velocityX = -(Math.abs(this.velocityX) + 20);
                     this.velocityY = Math.abs(this.velocityY) - 5;
                     this.velocityX *= this.friction;
+
+                    this.damageAudio.currentTime = 0;
+                    this.damageAudio.play();
+                    this.takeDamage();
                     this.hasCollided = true;
 
                     break;
@@ -108,7 +126,7 @@ export class Player {
     jump() {
         if (this.canJump && this.velocityY === 0) {
             this.jumpAudio.play(); 
-            this.velocityY = -10; 
+            this.velocityY = -12; 
             this.canJump = false; 
         }
     }

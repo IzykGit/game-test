@@ -3,14 +3,21 @@ import { Player } from "../classes/Player.js";
 import { canvas, ctx } from "../script.js";
 
 
-const player = new Player(50, 300, 30, 30, "blue", 1);
+const player = new Player(50, 300, 32, 45, "blue", 1);
 
 const entities = [];
 
 const collidingWith = new Set();
 
 
-
+const isColliding = (a, b) => {
+    return (
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y
+    );
+}
 
 
 const enemySpawnInterval = 2000;
@@ -19,7 +26,7 @@ let lastSpawnTime = 0;
 const spawnEnemy = () => {
     const x = Math.random() * (canvas.width - 32); 
     const y = -30;
-    const enemy = new Entity(x, y, 32, 32, "red", true);
+    const enemy = new Entity(x, y, 32, 52, "red", true);
     entities.push(enemy);
 }
 
@@ -33,9 +40,10 @@ export const updateEntities = (currentTime) => {
 
     for (let i = entities.length - 1; i >= 0; i--) {
         const enemy = entities[i];
-        enemy.move();
+        enemy.move(player.x, player.y);
         enemy.applyGravity(canvas);
-        enemy.handleCollide(collidingWith);
+
+
         enemy.draw(ctx);
 
 
@@ -54,25 +62,47 @@ const detectCollisions = () => {
     collidingWith.clear();
 
     for (const entity of entities) {
-        if (
-            entity.isSolid &&
-            player.x < entity.x + entity.width &&
-            player.x + player.width > entity.x &&
-            player.y < entity.y + entity.height &&
-            player.y + player.height > entity.y
-        ) {
-            collidingWith.add(entity)
+        if (entity.isSolid && isColliding(player, entity)) {
+            collidingWith.add(entity);
         }
+    }
 
+
+    for (let i = 0; i < entities.length; i++) {
+        for (let j = i + 1; j < entities.length; j++) {
+            if (entities[i].isSolid && entities[j].isSolid && 
+                isColliding(entities[i], entities[j])) {
+
+
+                entities[i].handleCollide(entities[j]);;
+            }
+        }
     }
 
     return null;
+}
+
+export const resetGame = () => {
+    player.x = canvas.width / 2;
+    player.y = canvas.height - 50;
+    player.velocityX = 0;
+    player.velocityY = 0;
+    player.playerHealth = 100;
+
+    entities.length = 0;
+    collidingWith.clear();
 }
 
 
 const keys = {}; 
 
 export const handlePlayer = () => {
+
+    if(player.playerHealth === 0) {
+        return 0
+    }
+
+
     player.applyGravity(canvas);
     player.handleCollide(collidingWith); 
     player.applyInertia(canvas);
@@ -83,8 +113,9 @@ export const handlePlayer = () => {
 
     player.drawPlayer(ctx);
     player.drawHealthBar(ctx)
-
 }
+
+
 
 document.addEventListener("keydown", (event) => {    
     keys[event.key] = true;
