@@ -34,10 +34,17 @@ let lastSpawnTime = 0;
 let spawnNumber = 2;
 
 const updateInterval = () => {
-    if (enemySpawnInterval <= 1000) return;
-    enemySpawnInterval -= playerScore;
-    if (spawnNumber > 10) return;
-    spawnNumber += 1;
+    if (enemySpawnInterval >= 1000) {
+        return enemySpawnInterval -= playerScore;
+    }
+
+
+    if (spawnNumber === 6) {
+        return;
+    }
+    else {
+        return spawnNumber += 1;
+    }
 }
 
 const spawnEnemy = () => {

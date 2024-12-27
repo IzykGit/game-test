@@ -39,6 +39,14 @@ html, body {
     margin: 2rem;
 }
 
+.menu-screen > p {
+    margin: 0;
+    color: white;
+
+    font-size: 3rem;
+    font-weight: bold;
+}
+
 .menu-screen > button {
     background-color: transparent;
     border: none;
