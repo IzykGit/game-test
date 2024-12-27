@@ -17,6 +17,7 @@ volumeSlider.addEventListener("input", () => {
     if (game.themeMusic) {
         game.themeMusic.volume = musicVolume
     }
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,7 +33,7 @@ class Main {
         this.isGameOver = false;
 
         this.themeMusic = null;
-        this.pauseAudio = new Audio("./sounds/pause.wav");
+        this.pauseAudio = new Audio("./assets/sounds/pause.wav");
 
         this.initCanvas();
         this.addEventListeners();
@@ -58,13 +59,15 @@ class Main {
             this.themeMusic.loop = false;
         }
 
-        this.themeMusic.volume = musicVolume;
-        this.themeMusic.play();
-
         this.themeMusic.addEventListener("ended", () => {
             this.themeMusic.currentTime = 0;
             this.themeMusic.play();
         });
+
+        if (this.themeMusic.paused) {
+            this.themeMusic.volume = musicVolume;
+            this.themeMusic.play();
+        }
 
     }
 
@@ -108,10 +111,6 @@ class Main {
     gameLoop = (currentTime) => {
         if (this.gameMenu) return;
         if (this.pause) return;
-
-
-        this.playThemeMusic();
-
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -173,8 +172,17 @@ class Main {
             startMenu.style.display = "none";
             this.gameMenu = false;
             this.gameLoop();
+            this.playThemeMusic();
         })
     }
+
+
+    destroy() {
+        document.removeEventListener("keydown", this.handleKeyDown);
+        document.removeEventListener("keyup", this.handleKeyUp);
+        window.removeEventListener("resize", this.handleResize);
+    }
+
 }
 
 

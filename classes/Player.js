@@ -13,15 +13,20 @@ export class Player {
         this.velocityY = 0;
         this.velocityX = 0;
         this.canJump = true;
+
         this.gravityConstant = 0.93;
         this.friction = 0.75;
 
         this.playerHealth = 100;
 
+        this.playerDirection = 0;
+
         this.hasCollided = false;
 
-        this.jumpAudio = new Audio('../sounds/jump.wav')
-        this.damageAudio = new Audio('../sounds/hitHurt.wav')
+        this.hasSpawned = false;
+        
+        this.jumpAudio = new Audio('../assets/sounds/jump.wav')
+        this.damageAudio = new Audio('../assets/sounds/hitHurt.wav')
     }
 
     drawPlayer(ctx) {
@@ -134,13 +139,15 @@ export class Player {
 
     move(keys, canvas) {
         const step = 5;
-
+        
         if (keys["a"] || keys["A"]) {
+            this.playerDirection = 2;
             this.x -= step;
             this.velocityX = -10;
             
         }
         if (keys["d"] || keys["D"]) {
+            this.playerDirection = 1;
             this.x += step;
             this.velocityX = 10;
         }
@@ -148,12 +155,5 @@ export class Player {
         if (this.x < 0) this.x = 0;
         if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
     };
-
-
-    attack(keys) {
-        if(keys["e"]) {
-            createProjectile()
-        }
-    }
     
 }

@@ -11,7 +11,8 @@ const projectiles = [];
 
 const collidingWith = new Set();
 
-const deathSound = new Audio("../sounds/death.wav");
+const deathSound = new Audio("../assets/sounds/death.wav");
+const attackSound = new Audio("../assets/sounds/laserShoot.wav")
 
 
 const isColliding = (a, b) => {
@@ -28,14 +29,16 @@ const enemySpawnInterval = 2000;
 let lastSpawnTime = 0;
 
 const spawnEnemy = () => {
-    const x = Math.random() * (canvas.width - 32); 
+    const x = Math.random() * (canvas.width - 40); 
     const y = -30;
     const enemy = new Entity(x, y, 40, 100, "red", true);
     entities.push(enemy);
 }
 
-export const createProjectile = () => {
-    const projectile = new Projectile(player.x, player.y);
+export const createProjectile = (direction) => {
+    const projectile = new Projectile(player.x, player.y, direction);
+    attackSound.currentTime = 0;
+    attackSound.play()
 
     projectile.drawProjectile(ctx);
     projectiles.push(projectile)
@@ -51,7 +54,7 @@ export const updateEntities = (currentTime) => {
 
     for (let i = entities.length - 1; i >= 0; i--) {
         const enemy = entities[i];
-        enemy.move(player.x, player.y);
+        enemy.move(player.x, player.y, player.width);
         enemy.applyGravity(canvas);
 
 
@@ -69,8 +72,13 @@ export const updateEntities = (currentTime) => {
         projectile.drawProjectile(ctx);
         projectile.accelerate(player.x, player.y);
 
-        if (projectile.y > canvas.width || projectile.y < canvas.width + projectile.width) {
-            entities.splice(i, 1);
+        if (
+            projectile.y < 0 ||
+            projectile.y > canvas.height ||
+            projectile.x < 0 ||
+            projectile.x > canvas.width
+        ) {
+            projectiles.splice(i, 1);
         }
     }
     
@@ -123,10 +131,11 @@ export const handlePlayer = () => {
 
     if(player.playerHealth === 0) {
         deathSound.play();
+        player.hasSpawned = false;
         return 0;
     }
 
-
+    player.hasSpawned = true;
     player.applyGravity(canvas);
     player.handleCollide(collidingWith); 
     player.applyInertia(canvas);
@@ -134,19 +143,29 @@ export const handlePlayer = () => {
     detectCollisions();
     
     player.move(keys, canvas, collidingWith); 
-    player.attack(keys, ctx)
 
     player.drawPlayer(ctx);
     player.drawHealthBar(ctx)
 }
 
 
+let canAttack = true;
 
 document.addEventListener("keydown", (event) => {    
+    if (!player.hasSpawned) return;
     keys[event.key] = true;
 
     if (event.key === " ") {
         player.jump();
+    }
+
+    if (event.key === "ArrowLeft" && player.playerHealth > 0 && canAttack) {
+        createProjectile(2)
+        canAttack = false;
+    }
+    if(event.key === "ArrowRight" && player.playerHealth > 0 && canAttack) {
+        createProjectile(1)
+        canAttack = false;
     }
 });
 
@@ -155,6 +174,14 @@ document.addEventListener("keyup", (event) => {
 
     if (event.key === " ") {
         player.canJump = true;
+    }
+
+
+    if (event.key === "ArrowLeft" && player.playerHealth > 0) {
+        canAttack = true;
+    }
+    if(event.key === "ArrowRight" && player.playerHealth > 0) {
+        canAttack = true;
     }
 });
 

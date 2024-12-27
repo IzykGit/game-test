@@ -15,13 +15,13 @@ export class Entity {
         this.velocityY = 0;
         this.gravityConstant = 0.5;
 
-        this.speed = 5;
+        this.speed = 4;
 
-        this.deathAudio = new Audio("../sounds/enemyDeath.wav")
+        this.deathAudio = new Audio("../assets/sounds/enemyDeath.wav")
     }
 
-    move(playerX, playerY) {
-        const dx = playerX - this.x;
+    move(playerX, playerY, playerWidth) {
+        const dx = (playerX + playerWidth) - (this.x + 1);
         const dy = playerY - this.y;
 
         const distance = Math.sqrt(dx * dx + dy * dy);

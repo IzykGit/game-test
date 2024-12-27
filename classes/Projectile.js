@@ -1,13 +1,15 @@
 export class Projectile {
-    constructor(x, y, damage) {
+    constructor(x, y, direction) {
         this.x = x;
         this.y = y;
-        this.damage = damage;
+        this.direction = direction;
+
+        this.damage = 20;
 
         this.width = 20;
         this.height = 15;
         this.velocityY = 0;
-        this.velocityX = 30;
+        this.velocityX = 20;
     }
 
     drawProjectile(ctx) {
@@ -16,6 +18,12 @@ export class Projectile {
     }
 
     accelerate() {
-        this.x += this.velocityX;
+        console.log(this.direction)
+        if (this.direction === 1) {
+            this.x += this.velocityX;
+        }
+        else  {
+            this.x -= this.velocityX;
+        }
     }
 }
