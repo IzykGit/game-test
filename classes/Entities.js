@@ -9,6 +9,7 @@ export class Entity {
         this.color = color;
         this.isSolid = isSolid;
 
+        this.type = "enemy";
 
         this.health = 100;
 
@@ -46,6 +47,11 @@ export class Entity {
 
     handleCollide(entity) {
         const collideState = collisionCheck(this, entity);
+
+            if(entity.type === "projectile") {
+                this.health -= entity.damage;
+                return;
+            }
 
             switch(collideState) {
                 case 1:
