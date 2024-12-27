@@ -1,4 +1,5 @@
-import { Entity } from "../classes/Entities.js"
+import { Entity } from "../classes/Entities.js";
+import { Projectile } from "../classes/Projectile.js";
 import { Player } from "../classes/Player.js";
 import { canvas, ctx } from "../script.js";
 
@@ -6,6 +7,7 @@ import { canvas, ctx } from "../script.js";
 const player = new Player(50, 300, 40, 90, "blue", 1);
 
 const entities = [];
+const projectiles = [];
 
 const collidingWith = new Set();
 
@@ -32,6 +34,13 @@ const spawnEnemy = () => {
     entities.push(enemy);
 }
 
+export const createProjectile = () => {
+    const projectile = new Projectile(player.x, player.y);
+
+    projectile.drawProjectile(ctx);
+    projectiles.push(projectile)
+}
+
 
 export const updateEntities = (currentTime) => {
 
@@ -50,6 +59,17 @@ export const updateEntities = (currentTime) => {
 
 
         if (enemy.y > canvas.height) {
+            entities.splice(i, 1);
+        }
+    }
+
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        const projectile = projectiles[i];
+
+        projectile.drawProjectile(ctx);
+        projectile.accelerate(player.x, player.y);
+
+        if (projectile.y > canvas.width || projectile.y < canvas.width + projectile.width) {
             entities.splice(i, 1);
         }
     }
@@ -81,12 +101,13 @@ const detectCollisions = () => {
         }
     }
 
+
     return null;
 }
 
-export const resetGame = () => {
-    player.x = canvas.width / 2;
-    player.y = canvas.height - 50;
+export const resetGameEntities = () => {
+    player.x = 50;
+    player.y = 300;
     player.velocityX = 0;
     player.velocityY = 0;
     player.playerHealth = 100;
@@ -113,6 +134,7 @@ export const handlePlayer = () => {
     detectCollisions();
     
     player.move(keys, canvas, collidingWith); 
+    player.attack(keys, ctx)
 
     player.drawPlayer(ctx);
     player.drawHealthBar(ctx)

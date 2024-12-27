@@ -1,4 +1,5 @@
 import { collisionCheck } from "../scripts/Collisions.js";
+import { createProjectile } from "../scripts/HandleEntities.js";
 
 export class Player {
     constructor(x, y, width, height, color, mass) {
@@ -29,8 +30,8 @@ export class Player {
     };
 
     drawHealthBar(ctx) {
-        const barWidth = 150; 
-        const barHeight = 15; 
+        const barWidth = 250; 
+        const barHeight = 25; 
         const healthPercentage = this.playerHealth / 100;
 
         ctx.fillStyle = "red"; 
@@ -147,5 +148,12 @@ export class Player {
         if (this.x < 0) this.x = 0;
         if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
     };
+
+
+    attack(keys) {
+        if(keys["e"]) {
+            createProjectile()
+        }
+    }
     
 }
