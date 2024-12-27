@@ -1,5 +1,4 @@
 import { collisionCheck } from "../scripts/Collisions.js";
-import { createProjectile } from "../scripts/HandleEntities.js";
 
 export class Player {
     constructor(x, y, width, height, color, mass) {
@@ -18,6 +17,7 @@ export class Player {
         this.friction = 0.75;
 
         this.playerHealth = 100;
+        this.score = 0;
 
         this.playerDirection = 0;
 
@@ -45,6 +45,7 @@ export class Player {
         ctx.fillStyle = "green"; 
         ctx.fillRect(50, 50, barWidth * healthPercentage, barHeight);
     }
+
 
     takeDamage() {
         if (this.playerHealth > 0) {

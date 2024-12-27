@@ -11,11 +11,13 @@ const projectiles = [];
 
 const collidingWith = new Set();
 
-let playerScore = 0;
-
 const deathSound = new Audio("../assets/sounds/death.wav");
 const attackSound = new Audio("../assets/sounds/laserShoot.wav")
 const enemydeathSound = new Audio("../assets/sounds/enemyDeath.wav")
+
+
+const scoreBoard = document.getElementById("player-score")
+scoreBoard.innerHTML = "Score: 0";
 
 
 
@@ -35,9 +37,8 @@ let spawnNumber = 2;
 
 const updateInterval = () => {
     if (enemySpawnInterval >= 1000) {
-        return enemySpawnInterval -= playerScore;
+        return enemySpawnInterval -= player.score;
     }
-
 
     if (spawnNumber === 6) {
         return;
@@ -81,7 +82,8 @@ export const updateEntities = (currentTime) => {
 
         if (enemy.health === 0) {
             enemydeathSound.play();
-            playerScore += 15;
+            player.score += 15;
+            scoreBoard.innerHTML = `Score: ${player.score}`
             updateInterval()
             entities.splice(i, 1)
         }
@@ -171,6 +173,8 @@ export const handlePlayer = () => {
     if(player.playerHealth === 0) {
         deathSound.play();
         player.hasSpawned = false;
+        player.score = 0;
+        scoreBoard.innerHTML = "Score: 0"
         return 0;
     }
 
