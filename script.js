@@ -5,17 +5,25 @@ export const ctx = canvas.getContext("2d");
 
 const startMenu = document.getElementById("menu-screen");
 
-const startButton = document.getElementById("start-button")
+const startButton = document.getElementById("start-button");
 
-const volumeSlider = document.getElementById("volume-slider")
+const volumeSlider = document.getElementById("volume-slider");
 let musicVolume = parseFloat(volumeSlider.value);
+
+
 
 volumeSlider.addEventListener("input", () => {
     musicVolume = parseFloat(volumeSlider.value)
+    if (game.themeMusic) {
+        game.themeMusic.volume = musicVolume
+    }
 });
 
-console.log(volumeSlider.value)
-console.log(musicVolume)
+document.addEventListener("DOMContentLoaded", () => {
+    game.playThemeMusic()
+})
+
+
 
 class Main {
     constructor() {
@@ -57,6 +65,7 @@ class Main {
             this.themeMusic.currentTime = 0;
             this.themeMusic.play();
         });
+
     }
 
     pauseThemeMusic() {
@@ -99,6 +108,10 @@ class Main {
     gameLoop = (currentTime) => {
         if (this.gameMenu) return;
         if (this.pause) return;
+
+
+        this.playThemeMusic();
+
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -161,10 +174,6 @@ class Main {
             this.gameMenu = false;
             this.gameLoop();
         })
-
-        document.addEventListener("DOMContentLoaded", () => {
-            this.playThemeMusic();
-        });
     }
 }
 

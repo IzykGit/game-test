@@ -85,6 +85,7 @@ html, body {
     height: 40px;
     width: 40px;
     background-color: rgb(0, 206, 0);
+    cursor: pointer;
 }
 
 #volume-slider {
