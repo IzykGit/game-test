@@ -179,9 +179,9 @@ const handlePowerUpCollisions = () => {
                 case "Health":
                     player.playerHealth += 20;
                     break;
-                case "Jump":
-                    player.mass -= 0.05;
-                    break;
+                // case "Jump":
+                //     player.mass -= 0.05;
+                //     break;
             }
             powerUpsOnGround.splice(i, 1);
         }
