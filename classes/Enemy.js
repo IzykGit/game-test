@@ -34,11 +34,6 @@ export class Enemy {
     handleCollide(entity) {
         const collideState = collisionCheck(this, entity);
 
-            if(entity.type === "projectile") {
-                this.health -= entity.damage;
-                return;
-            }
-
             switch(collideState) {
                 case 1:
                     this.x = entity.x + entity.width;

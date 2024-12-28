@@ -2,15 +2,15 @@ import { Enemy } from "../classes/Enemy.js";
 import { Projectile } from "../classes/Projectile.js";
 import { canvas, ctx } from "../script.js";
 import { PowerUps } from "../classes/PowerUps.js";
-import { applyGravity } from "../scripts/Gravity.js";
+
 import { getPlayer } from "../global/PlayerValues.js";
+import { EntityManager } from "../classes/EntityManager.js";
 
 
-const enemies = [];
-const projectiles = [];
+const entityManage = new EntityManager()
+
 const powerUpsOnGround = [];
 
-const entities = [getPlayer(), ...enemies]
 
 let randomXAxisPoint = null; 
 
@@ -70,8 +70,7 @@ const spawnEnemy = () => {
     randomXAxisPoint = Math.random() * (canvas.width - 40)
     const y = -30;
     const enemy = new Enemy(randomXAxisPoint, y, 40, 100, "red", "grunt", true);
-    enemies.push(enemy);
-    entities.push(enemy)
+    entityManage.addEnemy(enemy)
 }
 
 export const createProjectile = (direction) => {
@@ -83,7 +82,7 @@ export const createProjectile = (direction) => {
     attackSound.play()
 
     projectile.drawProjectile(ctx);
-    projectiles.push(projectile)
+    entityManage.addProjectile(projectile)
 }
 
 
@@ -111,11 +110,14 @@ export const updatePowerUps = () => {
 
     if (powerUpsOnGround.length > 0) {
         for (let i = powerUpsOnGround.length - 1; i >= 0; i--) {
-            const powerUp = powerUpsOnGround[i];
-            powerUp.applyGravity(canvas);
-            powerUp.draw(ctx);
+
+            if (powerUpsOnGround[i].y + powerUpsOnGround[i].height < canvas.height) {
+                powerUpsOnGround[i].applyGravity(canvas)
+            }
+        
+            powerUpsOnGround[i].draw(ctx);
     
-            if (powerUp.y > canvas.height) {
+            if (powerUpsOnGround[i].y > canvas.height) {
                 powerUpsOnGround.splice(i, 1);
             }
         }
@@ -127,16 +129,16 @@ export const updateAllEntities = (currentTime) => {
 
     const player = getPlayer();
 
-    applyGravity(entities)
+    entityManage.updateEntities();
 
-    if (currentTime - lastSpawnTime > enemySpawnInterval && enemies.length < spawnNumber) {
+    if (currentTime - lastSpawnTime > enemySpawnInterval && entityManage.enemies.length < spawnNumber) {
         spawnEnemy(canvas);
         lastSpawnTime = currentTime;
     }
 
-    if(enemies.length > 0) {
-        for (let i = enemies.length - 1; i >= 0; i--) {
-            const enemy = enemies[i];
+    if(entityManage.enemies.length > 0) {
+        for (let i = entityManage.enemies.length - 1; i >= 0; i--) {
+            const enemy = entityManage.enemies[i];
             enemy.move(player.x, player.y, player.width);
     
     
@@ -147,18 +149,18 @@ export const updateAllEntities = (currentTime) => {
                 playerScore += 15;
                 scoreBoard.innerHTML = `Score: ${playerScore}`
                 updateInterval()
-                enemies.splice(i, 1)
+                entityManage.enemies.splice(i, 1)
             }
     
             if (enemy.y > canvas.height) {
-                enemies.splice(i, 1);
+                entityManage.enemies.splice(i, 1);
             }
         }
     }
 
-    if (projectiles.length > 0) {
-        for (let i = projectiles.length - 1; i >= 0; i--) {
-            const projectile = projectiles[i];
+    if (entityManage.projectiles.length > 0) {
+        for (let i = entityManage.projectiles.length - 1; i >= 0; i--) {
+            const projectile = entityManage.projectiles[i];
     
             projectile.drawProjectile(ctx);
             projectile.accelerate(player.x, player.y);
@@ -169,7 +171,7 @@ export const updateAllEntities = (currentTime) => {
                 projectile.x < 0 ||
                 projectile.x > canvas.width
             ) {
-                projectiles.splice(i, 1);
+                entityManage.projectiles.splice(i, 1);
             }
         }
     }
@@ -207,18 +209,18 @@ const detectEnemyCollisions = () => {
 
     collidingWith.clear();
 
-    for (const entity of enemies) {
+    for (const entity of entityManage.enemies) {
         if (entity.isSolid && isColliding(player, entity)) {
             collidingWith.add(entity);
         }
     }
 
 
-    for (let i = 0; i < enemies.length; i++) {
-        for (let j = i + 1; j < enemies.length; j++) {
-            if (enemies[i].isSolid && enemies[j].isSolid && 
-                isColliding(enemies[i], enemies[j])) {
-                enemies[i].handleCollide(enemies[j]);
+    for (let i = 0; i < entityManage.enemies.length; i++) {
+        for (let j = i + 1; j < entityManage.enemies.length; j++) {
+            if (entityManage.enemies[i].isSolid && entityManage.enemies[j].isSolid && 
+                isColliding(entityManage.enemies[i], entityManage.enemies[j])) {
+                entityManage.enemies[i].handleCollide(entityManage.enemies[j]);
             }
         }
         
@@ -228,24 +230,7 @@ const detectEnemyCollisions = () => {
 }
 
 
-const detectProjectileCollisions = () => {
 
-    if (projectiles.length > 0 && enemies.length > 0) {
-        for (let i = 0; i < enemies.length; i++) {
-            for (let j = 0; j < projectiles.length; j++) {
-                if (
-                    enemies[i].isSolid && 
-                    isColliding(enemies[i], projectiles[j])
-                ) {        
-                    enemies[i].handleCollide(projectiles[j]);
-                    projectiles.splice(j, 1);
-                    j--;
-                }
-            }
-        }
-    }
-
-}
 
 
 export const resetGameEntities = () => {
@@ -259,7 +244,7 @@ export const resetGameEntities = () => {
     player.playerHealth = 100;
 
     enemySpawnInterval = 2000;
-    enemies.length = 0;
+    entityManage.enemies.length = 0;
     powerUpsOnGround.length = 0;
     collidingWith.clear();
 }
@@ -276,6 +261,9 @@ export const handlePlayer = () => {
         player.hasSpawned = false;
         playerScore = 0;
         scoreBoard.innerHTML = "Score: 0"
+
+        entityManage.projectiles.length = 0;
+        entityManage.enemies.length = 0;
         return 0;
     }
 
@@ -286,11 +274,11 @@ export const handlePlayer = () => {
     if (powerUpsOnGround.length > 0) {
         handlePowerUpCollisions();
     }
-    if (enemies.length > 0) {
+    if (entityManage.enemies.length > 0) {
         detectEnemyCollisions();
     }
-    if (projectiles.length > 0) {
-        detectProjectileCollisions()
+    if (entityManage.projectiles.length > 0) {
+        entityManage.detectProjectileCollisions()
     }
     
     player.move(keys, canvas, collidingWith); 
