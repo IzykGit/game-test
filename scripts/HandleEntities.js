@@ -240,6 +240,7 @@ export const resetGameEntities = () => {
     player.playerHealth = 100;
 
     entities.length = 0;
+    powerUpsOnGround.length = 0;
     collidingWith.clear();
 }
 
