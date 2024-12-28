@@ -69,7 +69,7 @@ const spawnEnemy = () => {
 }
 
 export const createProjectile = (direction) => {
-    const projectile = new Projectile(player.x, player.y, direction);
+    const projectile = new Projectile(player.x, player.y + 15, direction);
     attackSound.currentTime = 0;
     attackSound.play()
 
