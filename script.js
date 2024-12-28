@@ -1,4 +1,5 @@
-import { handlePlayer, resetGameEntities, updateEntities, updatePowerUps } from "./scripts/HandleEntities.js";
+import { getPlayer } from "./global/PlayerValues.js";
+import { handlePlayer, resetGameEntities, updateAllEntities, updatePowerUps } from "./scripts/HandleEntities.js";
 
 export const canvas = document.getElementById("root");
 export const ctx = canvas.getContext("2d");
@@ -42,11 +43,17 @@ class Main {
 
 
         window.addEventListener("resize", () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            if (window.innerWidth < 1920) {
+                canvas.width = window.innerWidth;
+                startMenu.width = window.innerWidth;
+            }
+            else {
+                canvas.width = 1920;
+                startMenu.width = 1920;
+            }
 
-            startMenu.width = window.innerWidth;
-            startMenu.height = window.innerHeight;
+            canvas.height = window.innerHeight;
+            startMenu.height = canvas.height;
         });
     }
 
@@ -112,7 +119,7 @@ class Main {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         updatePowerUps();
-        updateEntities(currentTime);
+        updateAllEntities(currentTime);
         const handler = handlePlayer(ctx, canvas);
 
         if (handler === 0) {

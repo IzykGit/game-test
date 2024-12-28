@@ -13,12 +13,9 @@ export class Player {
         this.velocityX = 0;
         this.canJump = true;
 
-        this.mass = 1;
-        this.gravityConstant = 0.93;
         this.friction = 0.75;
 
         this.playerHealth = 100;
-        this.score = 0;
 
         this.damageConstant = 10;
 
@@ -56,17 +53,6 @@ export class Player {
         }
         else {
             return;
-        }
-    }
-
-    applyGravity(canvas) {
-        this.velocityY += this.gravityConstant;
-        this.y += this.velocityY;
-   
-
-        if (this.y + this.height >= canvas.height) {
-            this.y = canvas.height - this.height;
-            this.velocityY = 0;
         }
     }
     

@@ -1,7 +1,7 @@
 import { collisionCheck } from "../scripts/Collisions.js";
 
-export class Entity {
-    constructor(x, y, width, height, color, isSolid = true) {
+export class Enemy {
+    constructor(x, y, width, height, color, type, isSolid = true) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -9,12 +9,11 @@ export class Entity {
         this.color = color;
         this.isSolid = isSolid;
 
-        this.type = "enemy";
+        this.type = type;
 
         this.health = 100;
 
         this.velocityY = 0;
-        this.gravityConstant = 0.5;
 
         this.speed = 4;
 
@@ -31,18 +30,6 @@ export class Entity {
 
         }
     }
-
-    applyGravity(canvas) {
-        this.velocityY += this.gravityConstant;
-        this.y += this.velocityY;
-   
-
-        if (this.y + this.height >= canvas.height) {
-            this.y = canvas.height - this.height;
-            this.velocityY = 0;
-        }
-    }
-
 
     handleCollide(entity) {
         const collideState = collisionCheck(this, entity);

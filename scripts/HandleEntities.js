@@ -1,15 +1,18 @@
-import { Entity } from "../classes/Entities.js";
+import { Enemy } from "../classes/Enemy.js";
 import { Projectile } from "../classes/Projectile.js";
-import { Player } from "../classes/Player.js";
 import { canvas, ctx } from "../script.js";
 import { PowerUps } from "../classes/PowerUps.js";
+import { applyGravity } from "../scripts/Gravity.js";
+import { getPlayer } from "../global/PlayerValues.js";
 
 
-const player = new Player(50, 300, 40, 90, "blue");
-
-const entities = [];
+const enemies = [];
 const projectiles = [];
 const powerUpsOnGround = [];
+
+const entities = [getPlayer(), ...enemies]
+
+let randomXAxisPoint = null; 
 
 let powerUpsData = null;
 
@@ -29,6 +32,8 @@ const enemydeathSound = new Audio("../assets/sounds/enemyDeath.wav")
 
 const scoreBoard = document.getElementById("player-score")
 scoreBoard.innerHTML = "Score: 0";
+
+let playerScore = 0;
 
 
 
@@ -50,10 +55,10 @@ let lastPowerupScore = 0;
 
 const updateInterval = () => {
     if (enemySpawnInterval >= 1000) {
-        return enemySpawnInterval -= player.score;
+        return enemySpawnInterval -= playerScore;
     }
 
-    if (spawnNumber === 6) {
+    if (spawnNumber === 4) {
         return;
     }
     else {
@@ -62,13 +67,17 @@ const updateInterval = () => {
 }
 
 const spawnEnemy = () => {
-    const x = Math.random() * (canvas.width - 40); 
+    randomXAxisPoint = Math.random() * (canvas.width - 40)
     const y = -30;
-    const enemy = new Entity(x, y, 40, 100, "red", true);
-    entities.push(enemy);
+    const enemy = new Enemy(randomXAxisPoint, y, 40, 100, "red", "grunt", true);
+    enemies.push(enemy);
+    entities.push(enemy)
 }
 
 export const createProjectile = (direction) => {
+
+    const player = getPlayer()
+
     const projectile = new Projectile(player.x, player.y + 15, direction);
     attackSound.currentTime = 0;
     attackSound.play()
@@ -89,14 +98,13 @@ const spawnPowerup = async () => {
     const y = -30;
 
     const randomPowerUp = getRandomPowerUp();
-    console.log(randomPowerUp)
 
     const powerUp = new PowerUps(x, y, randomPowerUp.type, randomPowerUp.color)
     powerUpsOnGround.push(powerUp)
 }
 
 export const updatePowerUps = () => {
-    if (player.score >= lastPowerupScore + 200) {
+    if (playerScore >= lastPowerupScore + 200) {
         spawnPowerup();
         lastPowerupScore += 200;
     }
@@ -115,32 +123,35 @@ export const updatePowerUps = () => {
 }
 
 
-export const updateEntities = (currentTime) => {
+export const updateAllEntities = (currentTime) => {
 
-    if (currentTime - lastSpawnTime > enemySpawnInterval && entities.length < spawnNumber) {
+    const player = getPlayer();
+
+    applyGravity(entities)
+
+    if (currentTime - lastSpawnTime > enemySpawnInterval && enemies.length < spawnNumber) {
         spawnEnemy(canvas);
         lastSpawnTime = currentTime;
     }
 
-    if(entities.length > 0) {
-        for (let i = entities.length - 1; i >= 0; i--) {
-            const enemy = entities[i];
+    if(enemies.length > 0) {
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            const enemy = enemies[i];
             enemy.move(player.x, player.y, player.width);
-            enemy.applyGravity(canvas);
     
     
             enemy.draw(ctx);
     
             if (enemy.health === 0) {
                 enemydeathSound.play();
-                player.score += 15;
-                scoreBoard.innerHTML = `Score: ${player.score}`
+                playerScore += 15;
+                scoreBoard.innerHTML = `Score: ${playerScore}`
                 updateInterval()
-                entities.splice(i, 1)
+                enemies.splice(i, 1)
             }
     
             if (enemy.y > canvas.height) {
-                entities.splice(i, 1);
+                enemies.splice(i, 1);
             }
         }
     }
@@ -170,6 +181,8 @@ export const updateEntities = (currentTime) => {
 const handlePowerUpCollisions = () => {
     if (powerUpsOnGround.length === 0) return;
 
+    const player = getPlayer();
+
     for (let i = powerUpsOnGround.length - 1; i >= 0; i--) {
 
         const powerUp = powerUpsOnGround[i];
@@ -188,37 +201,43 @@ const handlePowerUpCollisions = () => {
 
 
 
-const detectCollisions = () => {
+const detectEnemyCollisions = () => {
 
-    if (entities.length > 0) {
-        collidingWith.clear();
+    const player = getPlayer();
 
-        for (const entity of entities) {
-            if (entity.isSolid && isColliding(player, entity)) {
-                collidingWith.add(entity);
-            }
-        }
-    
-    
-        for (let i = 0; i < entities.length; i++) {
-            for (let j = i + 1; j < entities.length; j++) {
-                if (entities[i].isSolid && entities[j].isSolid && 
-                    isColliding(entities[i], entities[j])) {
-                    entities[i].handleCollide(entities[j]);
-                }
-            }
+    collidingWith.clear();
+
+    for (const entity of enemies) {
+        if (entity.isSolid && isColliding(player, entity)) {
+            collidingWith.add(entity);
         }
     }
-    
 
-    if (projectiles.length > 0 && entities.length > 0) {
-        for (let i = 0; i < entities.length; i++) {
+
+    for (let i = 0; i < enemies.length; i++) {
+        for (let j = i + 1; j < enemies.length; j++) {
+            if (enemies[i].isSolid && enemies[j].isSolid && 
+                isColliding(enemies[i], enemies[j])) {
+                enemies[i].handleCollide(enemies[j]);
+            }
+        }
+        
+    }
+
+    return null;
+}
+
+
+const detectProjectileCollisions = () => {
+
+    if (projectiles.length > 0 && enemies.length > 0) {
+        for (let i = 0; i < enemies.length; i++) {
             for (let j = 0; j < projectiles.length; j++) {
                 if (
-                    entities[i].isSolid && 
-                    isColliding(entities[i], projectiles[j])
+                    enemies[i].isSolid && 
+                    isColliding(enemies[i], projectiles[j])
                 ) {        
-                    entities[i].handleCollide(projectiles[j]);
+                    enemies[i].handleCollide(projectiles[j]);
                     projectiles.splice(j, 1);
                     j--;
                 }
@@ -226,20 +245,21 @@ const detectCollisions = () => {
         }
     }
 
-
-      
-
-    return null;
 }
 
+
 export const resetGameEntities = () => {
+
+    const player = getPlayer();
+
     player.x = 50;
     player.y = 300;
     player.velocityX = 0;
     player.velocityY = 0;
     player.playerHealth = 100;
 
-    entities.length = 0;
+    enemySpawnInterval = 2000;
+    enemies.length = 0;
     powerUpsOnGround.length = 0;
     collidingWith.clear();
 }
@@ -249,21 +269,29 @@ const keys = {};
 
 export const handlePlayer = () => {
 
+    const player = getPlayer()
+
     if(player.playerHealth === 0) {
         deathSound.play();
         player.hasSpawned = false;
-        player.score = 0;
+        playerScore = 0;
         scoreBoard.innerHTML = "Score: 0"
         return 0;
     }
 
     player.hasSpawned = true;
-    player.applyGravity(canvas);
     player.handleCollide(collidingWith); 
     player.applyInertia(canvas);
 
-    handlePowerUpCollisions();
-    detectCollisions();
+    if (powerUpsOnGround.length > 0) {
+        handlePowerUpCollisions();
+    }
+    if (enemies.length > 0) {
+        detectEnemyCollisions();
+    }
+    if (projectiles.length > 0) {
+        detectProjectileCollisions()
+    }
     
     player.move(keys, canvas, collidingWith); 
 
@@ -275,6 +303,9 @@ export const handlePlayer = () => {
 let canAttack = true;
 
 document.addEventListener("keydown", (event) => {    
+
+    const player = getPlayer();
+
     if (!player.hasSpawned) return;
     keys[event.key] = true;
 
@@ -293,6 +324,9 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
+
+    const player = getPlayer();
+
     keys[event.key] = false;
 
     if (event.key === " ") {
