@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "type": "Health",
+        "color": "Yellow"
+    },
+    {
+        "id": 2,
+        "type": "Jump",
+        "color": "Blue"
+    }
+]

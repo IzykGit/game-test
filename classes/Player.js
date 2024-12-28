@@ -1,23 +1,26 @@
 import { collisionCheck } from "../scripts/Collisions.js";
 
 export class Player {
-    constructor(x, y, width, height, color, mass) {
+    constructor(x, y, width, height, color) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.mass = mass;
+
         this.color = color;
 
         this.velocityY = 0;
         this.velocityX = 0;
         this.canJump = true;
 
+        this.mass = 1;
         this.gravityConstant = 0.93;
         this.friction = 0.75;
 
         this.playerHealth = 100;
         this.score = 0;
+
+        this.damageConstant = 10;
 
         this.playerDirection = 0;
 
@@ -49,7 +52,7 @@ export class Player {
 
     takeDamage() {
         if (this.playerHealth > 0) {
-            this.playerHealth -= 10;
+            this.playerHealth -= this.damageConstant;
         }
         else {
             return;

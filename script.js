@@ -1,4 +1,4 @@
-import { handlePlayer, resetGameEntities, updateEntities } from "./scripts/HandleEntities.js";
+import { handlePlayer, resetGameEntities, updateEntities, updatePowerUps } from "./scripts/HandleEntities.js";
 
 export const canvas = document.getElementById("root");
 export const ctx = canvas.getContext("2d");
@@ -20,9 +20,6 @@ volumeSlider.addEventListener("input", () => {
 
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    game.playThemeMusic()
-})
 
 
 
@@ -55,7 +52,7 @@ class Main {
 
     playThemeMusic() {
         if (!this.themeMusic) {
-            this.themeMusic = new Audio("./assets/Pixel Dreams-2.mp3");
+            this.themeMusic = new Audio("./assets/Industrial Shutout.mp3");
             this.themeMusic.loop = false;
         }
 
@@ -114,6 +111,7 @@ class Main {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        updatePowerUps();
         updateEntities(currentTime);
         const handler = handlePlayer(ctx, canvas);
 
@@ -135,7 +133,6 @@ class Main {
         this.pause = false;
 
         this.themeMusic.currentTime = 0;
-        this.playThemeMusic();
 
         startMenu.style.display = "flex";
         startButton.disabled = false;
@@ -158,8 +155,8 @@ class Main {
                         this.gameLoop(performance.now());
                     } else {
                         this.pauseThemeMusic();
-                        this.pauseAudio.play();
                         this.drawPauseMenu();
+                        this.pauseAudio.play();
                     }
 
                 }
@@ -177,7 +174,7 @@ class Main {
     }
 
 
-    destroy() {
+        destroy() {
         document.removeEventListener("keydown", this.handleKeyDown);
         document.removeEventListener("keyup", this.handleKeyUp);
         window.removeEventListener("resize", this.handleResize);

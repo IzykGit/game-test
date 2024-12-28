@@ -18,7 +18,6 @@ export class Entity {
 
         this.speed = 4;
 
-        this.deathAudio = new Audio("../assets/sounds/enemyDeath.wav")
     }
 
     move(playerX, playerY, playerWidth) {

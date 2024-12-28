@@ -20,7 +20,6 @@ export class Projectile {
     }
 
     accelerate() {
-        console.log(this.direction)
         if (this.direction === 1) {
             this.x += this.velocityX;
         }
