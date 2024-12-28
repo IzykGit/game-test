@@ -52,7 +52,7 @@ class Main {
 
     playThemeMusic() {
         if (!this.themeMusic) {
-            this.themeMusic = new Audio("./assets/Industrial Shutout.mp3");
+            this.themeMusic = new Audio("./assets/theme.mp3");
             this.themeMusic.loop = false;
         }
 
