@@ -33,9 +33,6 @@ const enemydeathSound = new Audio("../assets/sounds/enemyDeath.wav")
 const scoreBoard = document.getElementById("player-score")
 scoreBoard.innerHTML = "Score: 0";
 
-let playerScore = 0;
-
-
 
 const isColliding = (a, b) => {
     return (
@@ -51,11 +48,13 @@ let enemySpawnInterval = 2000;
 let lastSpawnTime = 0;
 let spawnNumber = 2;
 
-let lastPowerupScore = 0;
 
 const updateInterval = () => {
+
+    const player = getPlayer()
+
     if (enemySpawnInterval >= 1000) {
-        return enemySpawnInterval -= playerScore;
+        return enemySpawnInterval -= player.playerScore;
     }
 
     if (spawnNumber === 4) {
@@ -86,50 +85,19 @@ export const createProjectile = (direction) => {
 }
 
 
-const getRandomPowerUp = () => {
-    if (!powerUpsData) return null;
-    const randomIndex = Math.floor(Math.random() * powerUpsData.length);
-    return powerUpsData[randomIndex];
-};
 
-const spawnPowerup = async () => {
-    const x = Math.random() * (canvas.width - 40); 
-    const y = -30;
-
-    const randomPowerUp = getRandomPowerUp();
-
-    const powerUp = new PowerUps(x, y, randomPowerUp.type, randomPowerUp.color)
-    powerUpsOnGround.push(powerUp)
-}
-
-export const updatePowerUps = () => {
-    if (playerScore >= lastPowerupScore + 200) {
-        spawnPowerup();
-        lastPowerupScore += 200;
-    }
-
-    if (powerUpsOnGround.length > 0) {
-        for (let i = powerUpsOnGround.length - 1; i >= 0; i--) {
-
-            if (powerUpsOnGround[i].y + powerUpsOnGround[i].height < canvas.height) {
-                powerUpsOnGround[i].applyGravity(canvas)
-            }
-        
-            powerUpsOnGround[i].draw(ctx);
-    
-            if (powerUpsOnGround[i].y > canvas.height) {
-                powerUpsOnGround.splice(i, 1);
-            }
-        }
-    }
-}
-
+let scoreInterval = 200;
 
 export const updateAllEntities = (currentTime) => {
 
     const player = getPlayer();
 
     entityManage.updateEntities();
+
+    if (player.playerScore >= scoreInterval) {
+        entityManage.spawnPowerUp("health", "purple");
+        scoreInterval += 200;
+    };
 
     if (currentTime - lastSpawnTime > enemySpawnInterval && entityManage.enemies.length < spawnNumber) {
         spawnEnemy(canvas);
@@ -146,8 +114,8 @@ export const updateAllEntities = (currentTime) => {
     
             if (enemy.health === 0) {
                 enemydeathSound.play();
-                playerScore += 15;
-                scoreBoard.innerHTML = `Score: ${playerScore}`
+                player.playerScore += 15;
+                scoreBoard.innerHTML = `Score: ${player.playerScore}`
                 updateInterval()
                 entityManage.enemies.splice(i, 1)
             }
@@ -180,25 +148,6 @@ export const updateAllEntities = (currentTime) => {
 }
 
 
-const handlePowerUpCollisions = () => {
-    if (powerUpsOnGround.length === 0) return;
-
-    const player = getPlayer();
-
-    for (let i = powerUpsOnGround.length - 1; i >= 0; i--) {
-
-        const powerUp = powerUpsOnGround[i];
-    
-        if (isColliding(player, powerUp)) {
-            switch (powerUp.type) {
-                case "Health":
-                    player.playerHealth += 20;
-                    break;
-            }
-            powerUpsOnGround.splice(i, 1);
-        }
-    }
-};
 
 
 
@@ -245,7 +194,7 @@ export const resetGameEntities = () => {
 
     enemySpawnInterval = 2000;
     entityManage.enemies.length = 0;
-    powerUpsOnGround.length = 0;
+    entityManage.powerUps.length = 0;
     collidingWith.clear();
 }
 
@@ -259,7 +208,7 @@ export const handlePlayer = () => {
     if(player.playerHealth === 0) {
         deathSound.play();
         player.hasSpawned = false;
-        playerScore = 0;
+        player.playerScore = 0;
         scoreBoard.innerHTML = "Score: 0"
 
         entityManage.projectiles.length = 0;

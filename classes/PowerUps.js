@@ -11,7 +11,6 @@ export class PowerUps {
 
         this.velocityY = 0;
         this.gravityConstant = 0.93;
-
     }
 
     draw(ctx) {

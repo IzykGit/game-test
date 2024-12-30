@@ -13,6 +13,8 @@ export class Player {
         this.velocityX = 0;
         this.canJump = true;
 
+        this.playerScore = 0;
+
         this.friction = 0.75;
 
         this.playerHealth = 100;

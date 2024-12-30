@@ -1,7 +1,9 @@
 import { getPlayer } from "../global/PlayerValues.js";
+import { canvas, ctx } from "../script.js";
 import { getDamageSound } from "../scripts/Audio.js";
 import { isColliding } from "../scripts/Collisions.js";
 import { applyGravity } from "../scripts/Gravity.js";
+import { PowerUps } from "./PowerUps.js";
 
 const player = getPlayer();
 
@@ -9,7 +11,7 @@ export class EntityManager {
     constructor () {
         this.enemies = [];
         this.projectiles = [];
-        this.powerUpsOnGround = [];
+        this.powerUps = [];
 
         if (EntityManager.instance) {
             return EntityManager.instance;
@@ -56,8 +58,54 @@ export class EntityManager {
     
     }
 
+
+
+    handlePowerUpCollisions = () => {
+        if (this.powerUps.length === 0) return;
+    
+        const player = getPlayer();
+    
+        for (let i = this.powerUps.length - 1; i >= 0; i--) {
+    
+            const powerUp = this.powerUps[i];
+
+        
+            if (isColliding(player, powerUp)) {
+                if(powerUp.type === "health") {
+                    player.playerHealth += 20;
+                }
+                this.powerUps.splice(i, 1);
+            }
+        }
+    };
+
+    updatePowerUps = () => {    
+        if (this.powerUps.length > 0) {
+            for (let i = this.powerUps.length - 1; i >= 0; i--) {
+                
+                const powerUp = this.powerUps[i];
+
+                powerUp.draw(ctx);
+                powerUp.applyGravity(canvas);
+        
+                if (this.powerUps[i].y > canvas.height) {
+                    powerUp.splice(i, 1);
+                }
+            }
+        }
+    }
+
+
+    spawnPowerUp(type, color) {
+        const x = Math.random() * (canvas.width - 40);
+        const powerUp = new PowerUps(x, -30, type, color);
+        this.powerUps.push(powerUp);
+    }
+
     updateEntities() {
-        applyGravity([player, ...this.enemies])
-        this.detectProjectileCollisions()
+        applyGravity([player, ...this.enemies]);
+        this.detectProjectileCollisions();
+        this.updatePowerUps();
+        this.handlePowerUpCollisions();
     }
 }

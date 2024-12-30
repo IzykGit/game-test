@@ -1,5 +1,6 @@
-import { getPlayer } from "./global/PlayerValues.js";
-import { handlePlayer, resetGameEntities, updateAllEntities, updatePowerUps } from "./scripts/HandleEntities.js";
+import { GameMenus } from "./classes/GameMenus.js";
+import { LevelManager } from "./classes/LevelManager.js";
+import { handlePlayer, resetGameEntities, updateAllEntities } from "./scripts/HandleEntities.js";
 
 export const canvas = document.getElementById("root");
 export const ctx = canvas.getContext("2d");
@@ -35,6 +36,10 @@ class Main {
 
         this.initCanvas();
         this.addEventListeners();
+
+        this.menus = new GameMenus();
+        this.levelManager = new LevelManager();
+
     }
 
     initCanvas() {
@@ -88,29 +93,7 @@ class Main {
     }
 
 
-    drawPauseMenu() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "white";
-        ctx.font = "48px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
-        ctx.font = "24px Arial";
-        ctx.fillText("Press ESC to resume", canvas.width / 2, canvas.height / 2 + 40);
-    }
-
-    drawGameOver() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "white";
-        ctx.font = "48px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
-        ctx.font = "24px Arial";
-        ctx.fillText("Press Escape to restart!", canvas.width / 2, canvas.height / 2 + 40);
-    }
 
     gameLoop = (currentTime) => {
         if (this.gameMenu) return;
@@ -118,12 +101,14 @@ class Main {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        updatePowerUps();
         updateAllEntities(currentTime);
         const handler = handlePlayer(ctx, canvas);
 
+        this.levelManager.drawLevel(ctx);
+
+
         if (handler === 0) {
-            this.drawGameOver();
+            this.menus.drawGameOver();
             this.pauseThemeMusic();
             this.isGameOver = true;
             return;
@@ -162,7 +147,7 @@ class Main {
                         this.gameLoop(performance.now());
                     } else {
                         this.pauseThemeMusic();
-                        this.drawPauseMenu();
+                        this.menus.drawPauseMenu()
                         this.pauseAudio.play();
                     }
 
