@@ -14,14 +14,6 @@ const powerUpsOnGround = [];
 
 let randomXAxisPoint = null; 
 
-let powerUpsData = null;
-
-const initializePowerUps = async () => {
-    const response = await fetch('../jsons/power_ups.json');
-    powerUpsData = await response.json();
-};
-
-initializePowerUps();
 
 const collidingWith = new Set();
 

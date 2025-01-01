@@ -1,5 +1,4 @@
 import { GameMenus } from "./classes/GameMenus.js";
-import { LevelManager } from "./classes/LevelManager.js";
 import { handlePlayer, resetGameEntities, updateAllEntities } from "./scripts/HandleEntities.js";
 
 export const canvas = document.getElementById("root");
@@ -38,7 +37,6 @@ class Main {
         this.addEventListeners();
 
         this.menus = new GameMenus();
-        this.levelManager = new LevelManager();
 
     }
 
@@ -103,8 +101,6 @@ class Main {
 
         updateAllEntities(currentTime);
         const handler = handlePlayer(ctx, canvas);
-
-        this.levelManager.drawLevel(ctx);
 
 
         if (handler === 0) {
