@@ -1,4 +1,4 @@
-import { ctx } from "../script.js";
+import { ctx } from "../main.js";
 
 export class GameMenus {
     constructor() {

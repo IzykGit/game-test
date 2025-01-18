@@ -1,15 +1,11 @@
 import { Enemy } from "../classes/Enemy.js";
 import { Projectile } from "../classes/Projectile.js";
-import { canvas, ctx } from "../script.js";
-import { PowerUps } from "../classes/PowerUps.js";
+import { canvas, ctx } from "../main.js";
 
 import { getPlayer } from "../global/PlayerValues.js";
-import { EntityManager } from "../classes/EntityManager.js";
 
 
-const entityManage = new EntityManager()
 
-const powerUpsOnGround = [];
 
 
 let randomXAxisPoint = null; 
@@ -24,16 +20,6 @@ const enemydeathSound = new Audio("../assets/sounds/enemyDeath.wav")
 
 const scoreBoard = document.getElementById("player-score")
 scoreBoard.innerHTML = "Score: 0";
-
-
-const isColliding = (a, b) => {
-    return (
-        a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y
-    );
-}
 
 
 let enemySpawnInterval = 2000;
@@ -60,7 +46,7 @@ const updateInterval = () => {
 const spawnEnemy = () => {
     randomXAxisPoint = Math.random() * (canvas.width - 40)
     const y = -30;
-    const enemy = new Enemy(randomXAxisPoint, y, 40, 100, "red", "grunt", true);
+    const enemy = new Enemy(randomXAxisPoint, y, 40, 100, "red", true);
     entityManage.addEnemy(enemy)
 }
 
@@ -229,47 +215,6 @@ export const handlePlayer = () => {
 }
 
 
-let canAttack = true;
-
-document.addEventListener("keydown", (event) => {    
-
-    const player = getPlayer();
-
-    if (!player.hasSpawned) return;
-    keys[event.key] = true;
-
-    if (event.key === " ") {
-        player.jump();
-    }
-
-    if (event.key === "ArrowLeft" && player.playerHealth > 0 && canAttack) {
-        createProjectile(2)
-        canAttack = false;
-    }
-    if(event.key === "ArrowRight" && player.playerHealth > 0 && canAttack) {
-        createProjectile(1)
-        canAttack = false;
-    }
-});
-
-document.addEventListener("keyup", (event) => {
-
-    const player = getPlayer();
-
-    keys[event.key] = false;
-
-    if (event.key === " ") {
-        player.canJump = true;
-    }
-
-
-    if (event.key === "ArrowLeft" && player.playerHealth > 0) {
-        canAttack = true;
-    }
-    if(event.key === "ArrowRight" && player.playerHealth > 0) {
-        canAttack = true;
-    }
-});
 
 
 

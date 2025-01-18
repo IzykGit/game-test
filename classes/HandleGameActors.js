@@ -1,31 +1,24 @@
 import { getPlayer } from "../global/PlayerValues.js";
-import { canvas, ctx } from "../script.js";
 import { getDamageSound } from "../scripts/Audio.js";
 import { isColliding } from "../scripts/Collisions.js";
 import { applyGravity } from "../scripts/Gravity.js";
 import { PowerUps } from "./PowerUps.js";
+import { Projectile } from "./Projectile.js";
 
 const player = getPlayer();
 
-export class EntityManager {
-    constructor () {
+export class HandleGameActors {
+    constructor (canvas, ctx) {
+        this.canvas = canvas;
+        this.ctx = ctx;
+
         this.enemies = [];
         this.projectiles = [];
         this.powerUps = [];
-
-        if (EntityManager.instance) {
-            return EntityManager.instance;
-        }
-        EntityManager.instance = this;
-    
-    }
-
-
-    static getInstance() {
-        if (!EntityManager.instance) {
-            EntityManager.instance = new EntityManager();
-        }
-        return EntityManager.instance;
+        
+        
+        this.frictionConstant = 0.75;
+        this.gravityConstant = 0.93;
     }
 
     addEnemy(enemy) {
@@ -33,19 +26,51 @@ export class EntityManager {
     }
 
 
-    addProjectile(projectile) {
-        this.projectiles.push(projectile)
+    addProjectile() {
+        const projectile = new Projectile();
+        this.projectiles.push(projectile);
     }
+
+
+    applyGravity = () => {
+        for(let i = 0; i < entities.length; i++) {
+            this.entities[i].velocityY += gravityConstant;
+            this.entities[i].y += this.entities[i].velocityY;
+        
+        
+            if (this.entities[i].y + this.entities[i].height >= this.this.canvas.height) {
+                this.entities[i].y = this.this.canvas.height - this.entities[i].height;
+                this.entities[i].velocityY = 0;
+            }
+        }
+    }
+
+
+    applyInertia() {
+
+        for(let i = 0; i < this.entites.length; i++) {
+            this.entities[i].x += this.velocityX;
+
+            if (this.entities[i].x + this.width >= this.canvas.width) {
+                this.entities[i].x = this.canvas.width - this.width;
+                this.velocityX = 0;
+            }
+            if (this.entities[i].x < 0) {
+                this.entities[i].x = 0;
+                this.velocityX = 0;
+            }
+    
+            this.velocityX *= this.friction;
+        }
+    }
+    
 
 
     detectProjectileCollisions = () => {
         if (this.projectiles.length > 0 && this.enemies.length > 0) {
             for (let i = 0; i < this.enemies.length; i++) {
                 for (let j = 0; j < this.projectiles.length; j++) {
-                    if (
-                        this.enemies[i].isSolid && 
-                        isColliding(this.enemies[i], this.projectiles[j])
-                    ) {        
+                    if (isColliding(this.enemies[i], this.projectiles[j])) {        
                         this.enemies[i].health -= this.projectiles[j].damage;
                         getDamageSound().currentTime = 0;
                         getDamageSound().play();
@@ -86,9 +111,9 @@ export class EntityManager {
                 const powerUp = this.powerUps[i];
 
                 powerUp.draw(ctx);
-                powerUp.applyGravity(canvas);
+                powerUp.applyGravity(this.canvas);
         
-                if (this.powerUps[i].y > canvas.height) {
+                if (this.powerUps[i].y > this.canvas.height) {
                     powerUp.splice(i, 1);
                 }
             }
@@ -97,7 +122,7 @@ export class EntityManager {
 
 
     spawnPowerUp(type, color) {
-        const x = Math.random() * (canvas.width - 40);
+        const x = Math.random() * (this.canvas.width - 40);
         const powerUp = new PowerUps(x, -30, type, color);
         this.powerUps.push(powerUp);
     }

@@ -1,8 +1,10 @@
+import { Controls } from "./classes/Controls.js";
 import { GameMenus } from "./classes/GameMenus.js";
-import { handlePlayer, resetGameEntities, updateAllEntities } from "./scripts/HandleEntities.js";
+import { HandleGameActors } from "./classes/HandleGameActors.js";
+import { Player } from "./classes/Player.js";
 
-export const canvas = document.getElementById("root");
-export const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("root");
+const ctx = canvas.getContext("2d");
 
 const startMenu = document.getElementById("menu-screen");
 
@@ -32,6 +34,10 @@ class Main {
 
         this.themeMusic = null;
         this.pauseAudio = new Audio("./assets/sounds/pause.wav");
+
+        this.player = new Player(50, 300, 40, 90, "blue");
+        this.handleGameActors = new HandleGameActors(canvas, ctx)
+        this.controls = new Controls(this.player);
 
         this.initCanvas();
         this.addEventListeners();

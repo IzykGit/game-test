@@ -1,13 +1,13 @@
 import { collisionCheck } from "../scripts/Collisions.js";
 
 export class Enemy {
-    constructor(x, y, width, height, color, type, isSolid = true) {
+    constructor(x, y, width, height, color) {
         this.x = x;
         this.y = y;
+        this.color = color;
+
         this.width = width;
         this.height = height;
-        this.color = color;
-        this.isSolid = isSolid;
 
         this.type = type;
 
