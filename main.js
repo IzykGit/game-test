@@ -36,7 +36,7 @@ class Main {
         this.pauseAudio = new Audio("./assets/sounds/pause.wav");
 
         this.player = new Player(50, 300, 40, 90, "blue");
-        this.handleGameActors = new HandleGameActors(canvas, ctx)
+        this.handleGameActors = new HandleGameActors(canvas, ctx);
         this.controls = new Controls(this.player);
 
         this.initCanvas();
@@ -115,6 +115,8 @@ class Main {
             this.isGameOver = true;
             return;
         }
+
+        this.controls.move();
 
         requestAnimationFrame(this.gameLoop);
     };

@@ -21,10 +21,6 @@ export class Player {
 
         this.damageConstant = 10;
 
-        this.playerDirection = 0;
-
-        this.hasCollided = false;
-
         this.hasSpawned = false;
         
         this.jumpAudio = new Audio('../assets/sounds/jump.wav')
@@ -57,7 +53,6 @@ export class Player {
             return;
         }
     }
-    
 
 
     jump() {

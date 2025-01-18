@@ -11,12 +11,13 @@ export class Controls {
         this.left = "a";
         this.right = "d"
         this.jump = "";
+
+        this.canJump = true;
         
         this.attackRight = "arrowright";
         this.attackLeft = "arrowleft";
 
-        this.jumpAudio = new Audio('../assets/sounds/jump.wav')
-
+        this.jumpAudio = new Audio('../assets/sounds/jump.wav');
     }
 
     addEventListeners() {
@@ -26,43 +27,77 @@ export class Controls {
         
             if (!this.player.hasSpawned) return;
         
-            if (this.jump) {
-                this.player.jump();
+            switch(key) {
+                case key === this.left:
+                    this.keys[key] = true;
+                    break;
+                case key === this.right:
+                    this.keys[key] = true;
+                    break;
+                case key === this.jump:
+                    this.keys[key] = true;
+                    this.canJump = true;
+                    break;
+                case key === this.attackLeft:
+                    this.keys[key] = true;
+                    break;
+                case key === this.attackRight:
+                    this.keys[key] = true;
+                    break;
+                default:
+                    return;
             }
-        
-            if (key === this.attackLeft && this.player.playerHealth > 0 && canAttack) {
-                createProjectile(2)
-                canAttack = false;
-            }
-            if(key === this.attackRight && this.player.playerHealth > 0 && canAttack) {
-                createProjectile(1)
-                canAttack = false;
-            }
+
         });
         
         document.addEventListener("keyup", (event) => {
-        
-            keys[event.key] = false;
-        
-            if (event.key === " ") {
-                this.player.canJump = true;
-            }
-        
-        
-            if (event.key === "ArrowLeft" && this.player.playerHealth > 0) {
-                canAttack = true;
-            }
-            if(event.key === "ArrowRight" && this.player.playerHealth > 0) {
-                canAttack = true;
+
+            const key = event.key.toLowerCase();
+
+            switch(key) {
+                case key === this.left:
+                    this.keys[key] = false;
+                    break;
+                case key === this.right:
+                    this.keys[key] = false;
+                    break;
+                case key === this.jump:
+                    this.keys[key] = false;
+                    this.canJump = false;
+                    break;
+                case key === this.attackLeft:
+                    this.keys[key] = false;
+                    break;
+                case key === this.attackRight:
+                    this.keys[key] = false;
+                    break;
+                default:
+                    return;
             }
         });
+    }
 
 
+    move() {
+        const step = 5;
         
-    }
+        if (this.left) {
+            this.player.x -= step;
+            this.player.velocityX = -10;   
+        }
 
+        if (this.right) {
+            this.player.x += step;
+            this.player.velocityX = 10;
+        }
 
-    movement() {
+        if (this.canJump && this.velocityY === 0) {
+            this.jumpAudio.play(); 
+            this.velocityY = -20; 
+            this.canJump = false; 
+        }
 
-    }
+        if (this.x < 0) this.x = 0;
+        if (this.player.x + this.player.width > this.canvas.width) this.player.x = this.canvas.width - this.player.width;
+    };
 }
