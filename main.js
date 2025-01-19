@@ -37,8 +37,9 @@ class Main {
 
         this.player = new Player(50, 300, 40, 90, "blue");
         this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
-        this.controls = new Controls(this.player);
+        this.controls = new Controls(this.player, canvas);
         this.spawner = new Spawner(this.player)
+        this.gameMenu = new GameMenus(ctx)
 
         this.initCanvas();
         this.addEventListeners();
@@ -106,12 +107,12 @@ class Main {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (handler === 0) {
-            this.menus.drawGameOver();
-            this.pauseThemeMusic();
-            this.isGameOver = true;
-            return;
-        }
+        // if (handler === 0) {
+        //     this.menus.drawGameOver();
+        //     this.pauseThemeMusic();
+        //     this.isGameOver = true;
+        //     return;
+        // }
 
         this.controls.move();
         this.handleGameActors.updateActors();

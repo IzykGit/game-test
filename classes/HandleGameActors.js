@@ -2,8 +2,6 @@ import { isColliding } from "../scripts/Collisions.js";
 import { PowerUps } from "./PowerUps.js";
 import { Projectile } from "./Projectile.js";
 
-const player = getPlayer();
-
 export class HandleGameActors {
     constructor (player, canvas, ctx) {
         this.player = player
@@ -15,7 +13,9 @@ export class HandleGameActors {
         this.powerUps = [];
 
 
-        this.allEntities = [this.player, ...this.enemies]
+        this.allEntities = [this.player, ...this.enemies];
+
+        this.allActors = [...this.allEntities, ...this.powerUps]
         
         
         this.frictionConstant = 0.75;
@@ -34,14 +34,14 @@ export class HandleGameActors {
 
 
     applyGravity = () => {
-        for(let i = 0; i < entities.length; i++) {
-            this.entities[i].velocityY += gravityConstant;
-            this.entities[i].y += this.entities[i].velocityY;
+        for(let i = 0; i < this.allActors.length; i++) {
+            this.allActors[i].velocityY += this.gravityConstant;
+            this.allActors[i].y += this.allActors[i].velocityY;
         
         
-            if (this.entities[i].y + this.entities[i].height >= this.this.canvas.height) {
-                this.entities[i].y = this.this.canvas.height - this.entities[i].height;
-                this.entities[i].velocityY = 0;
+            if (this.allActors[i].y + this.allActors[i].height >= this.canvas.height) {
+                this.allActors[i].y = this.canvas.height - this.allActors[i].height;
+                this.allActors[i].velocityY = 0;
             }
         }
     }
@@ -49,19 +49,19 @@ export class HandleGameActors {
 
     applyInertia() {
 
-        for(let i = 0; i < this.entites.length; i++) {
-            this.entities[i].x += this.velocityX;
+        for(let i = 0; i < this.allEntities.length; i++) {
+            this.allEntities[i].x += this.velocityX;
 
-            if (this.entities[i].x + this.width >= this.canvas.width) {
-                this.entities[i].x = this.canvas.width - this.width;
-                this.velocityX = 0;
+            if (this.allEntities[i].x + this.width >= this.canvas.width) {
+                this.allEntities[i].x = this.canvas.width - this.width;
+                this.allEntities[i].velocityX = 0;
             }
-            if (this.entities[i].x < 0) {
-                this.entities[i].x = 0;
-                this.velocityX = 0;
+            if (this.allEntities[i].x < 0) {
+                this.allEntities[i].x = 0;
+                this.allEntities[i].velocityX = 0;
             }
     
-            this.velocityX *= this.friction;
+            this.allEntities[i].velocityX *= this.frictionConstant;
         }
     }
     
@@ -161,7 +161,7 @@ export class HandleGameActors {
     }
 
     updateActors() {
-        this.applyGravity([player, ...this.enemies]);
+        this.applyGravity([this.player, ...this.enemies]);
         this.handleProjectileCollisions();
         this.handleEntityCollisions();
         this.handlePowerUpCollisions();

@@ -1,9 +1,10 @@
 
 
 export class Controls {
-    constructor(player) {
-
+    constructor(player, canvas) {
+        this.canvas = canvas;
         this.player = player;
+        
         this.addEventListeners();
 
         this.keys = {};
@@ -105,7 +106,7 @@ export class Controls {
             
         }
 
-        if (this.x < 0) this.x = 0;
+        if (this.player.x < 0) this.player.x = 0;
         if (this.player.x + this.player.width > this.canvas.width) this.player.x = this.canvas.width - this.player.width;
     };
 }
