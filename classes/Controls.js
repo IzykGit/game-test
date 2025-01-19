@@ -13,11 +13,14 @@ export class Controls {
         this.jump = "";
 
         this.canJump = true;
+        this.canAttack = true;
         
         this.attackRight = "arrowright";
         this.attackLeft = "arrowleft";
 
         this.jumpAudio = new Audio('../assets/sounds/jump.wav');
+        this.attackAudio = new Audio("../assets/sounds/laserShoot.wav")
+
     }
 
     addEventListeners() {
@@ -36,13 +39,14 @@ export class Controls {
                     break;
                 case key === this.jump:
                     this.keys[key] = true;
-                    this.canJump = true;
                     break;
                 case key === this.attackLeft:
                     this.keys[key] = true;
+                    this.canAttack = false;
                     break;
                 case key === this.attackRight:
                     this.keys[key] = true;
+                    this.canAttack = false;
                     break;
                 default:
                     return;
@@ -63,7 +67,6 @@ export class Controls {
                     break;
                 case key === this.jump:
                     this.keys[key] = false;
-                    this.canJump = false;
                     break;
                 case key === this.attackLeft:
                     this.keys[key] = false;
@@ -95,6 +98,11 @@ export class Controls {
             this.jumpAudio.play(); 
             this.velocityY = -20; 
             this.canJump = false; 
+        }
+
+        if (this.attackRight && this.canAttack) {
+            this.attackAudio.play();
+            
         }
 
         if (this.x < 0) this.x = 0;

@@ -14,7 +14,6 @@ let randomXAxisPoint = null;
 const collidingWith = new Set();
 
 const deathSound = new Audio("../assets/sounds/death.wav");
-const attackSound = new Audio("../assets/sounds/laserShoot.wav")
 const enemydeathSound = new Audio("../assets/sounds/enemyDeath.wav")
 
 

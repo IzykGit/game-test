@@ -1,5 +1,3 @@
-import { collisionCheck } from "../scripts/Collisions.js";
-
 export class Enemy {
     constructor(x, y, width, height, color) {
         this.x = x;
@@ -31,32 +29,6 @@ export class Enemy {
             this.x += (dx / distance) * this.speed;
 
         }
-    }
-
-    handleCollide(entity) {
-        const collideState = collisionCheck(this, entity);
-
-            switch(collideState) {
-                case 1:
-                    this.x = entity.x + entity.width;
-                    break;
-                case 2:
-                    this.x = entity.x - this.width;
-                    break;
-                case 3:
-                    this.y = entity.y + entity.height; 
-                    this.velocityY = 0;
-                    break;
-                case 4:
-                    this.y = entity.y - this.height; 
-                    this.velocityY = 0; 
-            }
-    }
-    
-
-    draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
     isOffScreen(canvas) {

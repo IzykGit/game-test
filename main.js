@@ -106,10 +106,6 @@ class Main {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        updateAllEntities(currentTime);
-        const handler = handlePlayer(ctx, canvas);
-
-
         if (handler === 0) {
             this.menus.drawGameOver();
             this.pauseThemeMusic();
@@ -118,6 +114,7 @@ class Main {
         }
 
         this.controls.move();
+        this.handleGameActors.updateActors();
 
         requestAnimationFrame(this.gameLoop);
     };

@@ -1,5 +1,3 @@
-import { getPlayer } from "../global/PlayerValues.js";
-import { getDamageSound } from "../scripts/Audio.js";
 import { isColliding } from "../scripts/Collisions.js";
 import { PowerUps } from "./PowerUps.js";
 import { Projectile } from "./Projectile.js";
@@ -148,6 +146,13 @@ export class HandleGameActors {
         }
     }
 
+    drawActors() {
+        for(let i = 0; i < this.allEntities.length; i++) {
+            this.ctx.fillStyle = this.allEntities[i].color;
+            this.ctx.fillRect(this.allEntities[i].x, this.allEntities[i].y, this.allEntities[i].width, this.allEntities[i].height)
+        }
+    }
+
 
     spawnPowerUp(type, color) {
         const x = Math.random() * (this.canvas.width - 40);
@@ -157,8 +162,10 @@ export class HandleGameActors {
 
     updateActors() {
         this.applyGravity([player, ...this.enemies]);
-        this.detectProjectileCollisions();
-        this.updatePowerUps();
+        this.handleProjectileCollisions();
+        this.handleEntityCollisions();
         this.handlePowerUpCollisions();
+        this.updatePowerUps();
+        this.drawActors();
     }
 }
