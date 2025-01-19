@@ -1,4 +1,3 @@
-import { collisionCheck } from "../scripts/Collisions.js";
 
 export class Player {
     constructor(x, y, width, height, color) {
@@ -11,11 +10,8 @@ export class Player {
 
         this.velocityY = 0;
         this.velocityX = 0;
-        this.canJump = true;
 
         this.playerScore = 0;
-
-
 
         this.playerHealth = 100;
 
@@ -23,14 +19,9 @@ export class Player {
 
         this.hasSpawned = false;
         
-        this.jumpAudio = new Audio('../assets/sounds/jump.wav')
         this.damageAudio = new Audio('../assets/sounds/hitHurt.wav')
     }
 
-    drawPlayer(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    };
 
     drawHealthBar(ctx) {
         const barWidth = 250; 
@@ -53,33 +44,5 @@ export class Player {
             return;
         }
     }
-
-
-    jump() {
-        if (this.canJump && this.velocityY === 0) {
-            this.jumpAudio.play(); 
-            this.velocityY = -20; 
-            this.canJump = false; 
-        }
-    }
-
-    move(keys, canvas) {
-        const step = 5;
-        
-        if (keys["a"] || keys["A"]) {
-            this.playerDirection = 2;
-            this.x -= step;
-            this.velocityX = -10;
-            
-        }
-        if (keys["d"] || keys["D"]) {
-            this.playerDirection = 1;
-            this.x += step;
-            this.velocityX = 10;
-        }
-
-        if (this.x < 0) this.x = 0;
-        if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
-    };
     
 }

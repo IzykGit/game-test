@@ -19,6 +19,8 @@ export class Enemy {
 
     }
 
+
+    // moves enemy in the direction of the player
     move(playerX, playerY, playerWidth) {
         const dx = (playerX + playerWidth) - (this.x + 1);
         const dy = playerY - this.y;

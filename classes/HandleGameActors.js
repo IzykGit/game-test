@@ -1,20 +1,23 @@
 import { getPlayer } from "../global/PlayerValues.js";
 import { getDamageSound } from "../scripts/Audio.js";
 import { isColliding } from "../scripts/Collisions.js";
-import { applyGravity } from "../scripts/Gravity.js";
 import { PowerUps } from "./PowerUps.js";
 import { Projectile } from "./Projectile.js";
 
 const player = getPlayer();
 
 export class HandleGameActors {
-    constructor (canvas, ctx) {
+    constructor (player, canvas, ctx) {
+        this.player = player
         this.canvas = canvas;
         this.ctx = ctx;
 
         this.enemies = [];
         this.projectiles = [];
         this.powerUps = [];
+
+
+        this.allEntities = [this.player, ...this.enemies]
         
         
         this.frictionConstant = 0.75;
@@ -65,8 +68,34 @@ export class HandleGameActors {
     }
     
 
+    handleEntityCollisions() {
+        for(let i = 0; i < this.allEntities.length; i++) {
+            for(let j = i + 1; j < this.allEntities.length; i++) {
 
-    detectProjectileCollisions = () => {
+                const collideState = collisionCheck(this.allEntities[i], this.allEntities[j]);
+
+                switch(collideState) {
+                    case 1:
+                        this.allEntities[i].x = this.allEntities[j].x + this.allEntities[j].width;
+                        break;
+                    case 2:
+                        this.allEntities[i].x = this.allEntities[j].x - this.allEntities[i].width;
+                        break;
+                    case 3:
+                        this.allEntities[i].y = this.allEntities[j].y + thisl.allEntities[j].height; 
+                        this.allEntities[i].velocityY = 0;
+                        break;
+                    case 4:
+                        this.allEntities[i].y = this.allEntities[j].y - this,this.allEntities[i].height; 
+                        this.allEntities[i].velocityY = 0; 
+                }
+            }
+        }
+    }
+
+
+
+    handleProjectileCollisions = () => {
         if (this.projectiles.length > 0 && this.enemies.length > 0) {
             for (let i = 0; i < this.enemies.length; i++) {
                 for (let j = 0; j < this.projectiles.length; j++) {
@@ -126,8 +155,8 @@ export class HandleGameActors {
         this.powerUps.push(powerUp);
     }
 
-    updateEntities() {
-        applyGravity([player, ...this.enemies]);
+    updateActors() {
+        this.applyGravity([player, ...this.enemies]);
         this.detectProjectileCollisions();
         this.updatePowerUps();
         this.handlePowerUpCollisions();

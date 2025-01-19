@@ -2,6 +2,7 @@ import { Controls } from "./classes/Controls.js";
 import { GameMenus } from "./classes/GameMenus.js";
 import { HandleGameActors } from "./classes/HandleGameActors.js";
 import { Player } from "./classes/Player.js";
+import { Spawner } from "./classes/Spawner.js";
 
 const canvas = document.getElementById("root");
 const ctx = canvas.getContext("2d");
@@ -33,11 +34,11 @@ class Main {
         this.isGameOver = false;
 
         this.themeMusic = null;
-        this.pauseAudio = new Audio("./assets/sounds/pause.wav");
 
         this.player = new Player(50, 300, 40, 90, "blue");
-        this.handleGameActors = new HandleGameActors(canvas, ctx);
+        this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
         this.controls = new Controls(this.player);
+        this.spawner = new Spawner(this.player)
 
         this.initCanvas();
         this.addEventListeners();

@@ -130,36 +130,6 @@ export const updateAllEntities = (currentTime) => {
 
 
 
-const detectEnemyCollisions = () => {
-
-    const player = getPlayer();
-
-    collidingWith.clear();
-
-    for (const entity of entityManage.enemies) {
-        if (entity.isSolid && isColliding(player, entity)) {
-            collidingWith.add(entity);
-        }
-    }
-
-
-    for (let i = 0; i < entityManage.enemies.length; i++) {
-        for (let j = i + 1; j < entityManage.enemies.length; j++) {
-            if (entityManage.enemies[i].isSolid && entityManage.enemies[j].isSolid && 
-                isColliding(entityManage.enemies[i], entityManage.enemies[j])) {
-                entityManage.enemies[i].handleCollide(entityManage.enemies[j]);
-            }
-        }
-        
-    }
-
-    return null;
-}
-
-
-
-
-
 export const resetGameEntities = () => {
 
     const player = getPlayer();
@@ -195,8 +165,6 @@ export const handlePlayer = () => {
     }
 
     player.hasSpawned = true;
-    player.handleCollide(collidingWith); 
-    player.applyInertia(canvas);
 
     if (powerUpsOnGround.length > 0) {
         handlePowerUpCollisions();
