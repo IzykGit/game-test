@@ -2,7 +2,7 @@ import { Controls } from "./classes/Controls.js";
 import { GameMenus } from "./classes/GameMenus.js";
 import { HandleGameActors } from "./classes/HandleGameActors.js";
 import { Player } from "./classes/Player.js";
-import { Spawner } from "./classes/Spawner.js";
+import { SpawnActors } from "./classes/SpawnActors.js";
 
 const canvas = document.getElementById("root");
 const ctx = canvas.getContext("2d");
@@ -21,7 +21,6 @@ volumeSlider.addEventListener("input", () => {
     if (game.themeMusic) {
         game.themeMusic.volume = musicVolume
     }
-
 });
 
 
@@ -38,7 +37,7 @@ class Main {
         this.player = new Player(50, 300, 40, 90, "blue");
         this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
         this.controls = new Controls(this.player, canvas);
-        this.spawner = new Spawner(this.player)
+        this.spawnActors = new SpawnActors(this.player)
         this.gameMenu = new GameMenus(ctx)
 
         this.initCanvas();
@@ -114,7 +113,7 @@ class Main {
         //     return;
         // }
 
-        this.controls.move();
+        this.controls.updateMovement();
         this.handleGameActors.updateActors();
 
         requestAnimationFrame(this.gameLoop);

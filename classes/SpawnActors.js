@@ -1,6 +1,6 @@
 
 
-export class Spawner {
+export class SpawnActors {
     constructor(player) {
         this.player = player;
     }

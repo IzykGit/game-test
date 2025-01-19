@@ -4,6 +4,7 @@ export class AudioManager {
 
         this.playerDeath = new Audio("../assets/sounds/death.wav");
         this.pauseAudio = new Audio("./assets/sounds/pause.wav");
+        
 
     }
 }

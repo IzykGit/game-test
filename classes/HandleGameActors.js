@@ -20,6 +20,8 @@ export class HandleGameActors {
         
         this.frictionConstant = 0.75;
         this.gravityConstant = 0.93;
+
+        this.damageSound = new Audio("../assets/sounds/damageDealt.wav")
     }
 
     addEnemy(enemy) {
@@ -99,8 +101,8 @@ export class HandleGameActors {
                 for (let j = 0; j < this.projectiles.length; j++) {
                     if (isColliding(this.enemies[i], this.projectiles[j])) {        
                         this.enemies[i].health -= this.projectiles[j].damage;
-                        getDamageSound().currentTime = 0;
-                        getDamageSound().play();
+                        this.damageSound.currentTime = 0;
+                        this.damageSound.play();
                         this.projectiles.splice(j, 1);
                         j--;
                     }
@@ -111,19 +113,11 @@ export class HandleGameActors {
 
 
 
-    handlePowerUpCollisions = () => {
-        if (this.powerUps.length === 0) return;
-    
-        const player = getPlayer();
-    
-        for (let i = this.powerUps.length - 1; i >= 0; i--) {
-    
-            const powerUp = this.powerUps[i];
-
-        
-            if (isColliding(player, powerUp)) {
-                if(powerUp.type === "health") {
-                    player.playerHealth += 20;
+    handlePowerUpCollisions = () => {    
+        for (let i = this.powerUps.length - 1; i >= 0; i--) {        
+            if (isColliding(this.player, this.powerUps[i])) {
+                if(this.powerUps[i].type === "health") {
+                    this.player.playerHealth += 20;
                 }
                 this.powerUps.splice(i, 1);
             }
@@ -132,15 +126,9 @@ export class HandleGameActors {
 
     updatePowerUps = () => {    
         if (this.powerUps.length > 0) {
-            for (let i = this.powerUps.length - 1; i >= 0; i--) {
-                
-                const powerUp = this.powerUps[i];
-
-                powerUp.draw(ctx);
-                powerUp.applyGravity(this.canvas);
-        
+            for (let i = this.powerUps.length - 1; i >= 0; i--) {        
                 if (this.powerUps[i].y > this.canvas.height) {
-                    powerUp.splice(i, 1);
+                    this.powerUps.splice(i, 1);
                 }
             }
         }
