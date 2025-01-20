@@ -1,9 +1,10 @@
 
 
 export class Controls {
-    constructor(player, canvas) {
+    constructor(player, canvas, spawnActors) {
         this.canvas = canvas;
         this.player = player;
+        this.spawnActors = spawnActors;
 
         this.keys = {};
 
@@ -20,11 +21,11 @@ export class Controls {
         this.attackRight = "arrowright";
         this.attackLeft = "arrowleft";
 
-        this.jumpAudio = new Audio('../assets/sounds/jump.wav');
-        this.attackAudio = new Audio("../assets/sounds/laserShoot.wav")
+        this.jumpAudio = new Audio("../assets/sounds/jump.wav");
+        
 
         this.addEventListeners();
-
+ 
     }
 
     addEventListeners() {
@@ -42,11 +43,11 @@ export class Controls {
             }
 
             if(key === this.attackLeft && this.canAttack) {
-                this.canAttack = false;
+                this.keys[key] = true;
             }
 
             if(key === this.attackRight && this.canAttack) {
-                this.canAttack = false;
+                this.keys[key] = true;
             }
         });
 
@@ -80,8 +81,18 @@ export class Controls {
             this.player.x += this.stepSpeed;
         };
 
-        if(this.keys[this.jump]) {
+        if(this.keys[this.jump] && this.player.velocityY === 0) {
             this.player.y -= this.stepSpeed;
+        }
+
+        if(this.keys[this.attackLeft] && this.canAttack) {
+            this.spawnActors.spawnProjectile();
+            this.canAttack = false;
+        }
+
+        if(this.keys[this.attackRight] && this.canAttack) {
+            this.spawnActors.spawnProjectile();
+            this.canAttack = false;
         }
 
 
@@ -92,7 +103,5 @@ export class Controls {
 
         if (this.player.x < 0) this.player.x = 0;
         if (this.player.x + this.player.width > this.canvas.width) this.player.x = this.canvas.width - this.player.width;
-
-        console.log(this.canJump)
     };
 }

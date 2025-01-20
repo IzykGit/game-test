@@ -1,6 +1,4 @@
 import { isColliding } from "../scripts/Collisions.js";
-import { PowerUps } from "./PowerUps.js";
-import { Projectile } from "./Projectile.js";
 
 export class HandleGameActors {
     constructor (player, canvas, ctx) {
@@ -15,23 +13,28 @@ export class HandleGameActors {
 
         this.allEntities = [this.player, ...this.enemies];
 
-        this.allActors = [...this.allEntities, ...this.powerUps]
+        this.allActors = [this.player, ...this.enemies, ...this.powerUps]
         
         
         this.frictionConstant = 0.75;
         this.gravityConstant = 0.93;
 
         this.damageSound = new Audio("../assets/sounds/damageDealt.wav")
+
+
+        this.eventBus = new EventTarget()
     }
 
     addEnemy(enemy) {
         this.enemies.push(enemy)
     }
 
-
-    addProjectile() {
-        const projectile = new Projectile();
+    addProjectile(projectile) {
         this.projectiles.push(projectile);
+    }
+
+    addPowerUp(powerUp) {
+        this.powerUps.push(powerUp)
     }
 
 
@@ -52,15 +55,15 @@ export class HandleGameActors {
     applyInertia() {
 
         for(let i = 0; i < this.allEntities.length; i++) {
-            this.allEntities[i].x += this.velocityX;
+            this.allEntities[i].x += this.allEntities[i].velocityX;
 
             if (this.allEntities[i].x + this.width >= this.canvas.width) {
                 this.allEntities[i].x = this.canvas.width - this.width;
                 this.allEntities[i].velocityX = 0;
             }
             if (this.allEntities[i].x < 0) {
-                this.allEntities[i].x = 0;
                 this.allEntities[i].velocityX = 0;
+                this.allEntities[i].x = 0;
             }
     
             this.allEntities[i].velocityX *= this.frictionConstant;
@@ -142,14 +145,10 @@ export class HandleGameActors {
     }
 
 
-    spawnPowerUp(type, color) {
-        const x = Math.random() * (this.canvas.width - 40);
-        const powerUp = new PowerUps(x, -30, type, color);
-        this.powerUps.push(powerUp);
-    }
+
 
     updateActors() {
-        this.applyGravity([this.player, ...this.enemies]);
+        this.applyGravity();
         this.handleProjectileCollisions();
         this.handleEntityCollisions();
         this.handlePowerUpCollisions();

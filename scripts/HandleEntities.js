@@ -1,8 +1,4 @@
-import { Enemy } from "../classes/Enemy.js";
-import { Projectile } from "../classes/Projectile.js";
-import { canvas, ctx } from "../main.js";
 
-import { getPlayer } from "../global/PlayerValues.js";
 
 
 
@@ -40,25 +36,6 @@ const updateInterval = () => {
     else {
         return spawnNumber += 1;
     }
-}
-
-const spawnEnemy = () => {
-    randomXAxisPoint = Math.random() * (canvas.width - 40)
-    const y = -30;
-    const enemy = new Enemy(randomXAxisPoint, y, 40, 100, "red", true);
-    entityManage.addEnemy(enemy)
-}
-
-export const createProjectile = (direction) => {
-
-    const player = getPlayer()
-
-    const projectile = new Projectile(player.x, player.y + 15, direction);
-    attackSound.currentTime = 0;
-    attackSound.play()
-
-    projectile.drawProjectile(ctx);
-    entityManage.addProjectile(projectile)
 }
 
 

@@ -34,10 +34,10 @@ class Main {
 
         this.themeMusic = null;
 
-        this.player = new Player(50, 300, 40, 90, "blue");
+        this.player = new Player(50, 300, 25, 50, "blue");
         this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
-        this.controls = new Controls(this.player, canvas);
         this.spawnActors = new SpawnActors(this.player)
+        this.controls = new Controls(this.player, canvas, this.spawnActors);
         this.gameMenu = new GameMenus(ctx)
 
         this.initCanvas();
@@ -65,24 +65,6 @@ class Main {
             canvas.height = window.innerHeight;
             startMenu.height = canvas.height;
         });
-    }
-
-    playThemeMusic() {
-        if (!this.themeMusic) {
-            this.themeMusic = new Audio("./assets/theme.mp3");
-            this.themeMusic.loop = false;
-        }
-
-        this.themeMusic.addEventListener("ended", () => {
-            this.themeMusic.currentTime = 0;
-            this.themeMusic.play();
-        });
-
-        if (this.themeMusic.paused) {
-            this.themeMusic.volume = musicVolume;
-            this.themeMusic.play();
-        }
-
     }
 
     pauseThemeMusic() {
@@ -145,7 +127,6 @@ class Main {
                     this.pause = !this.pause;
                     if (!this.pause) {
                         this.pauseAudio.play();
-                        this.resumeThemeMusic();
                         this.gameLoop(performance.now());
                     } else {
                         this.pauseThemeMusic();
@@ -163,7 +144,6 @@ class Main {
             startMenu.style.display = "none";
             this.gameMenu = false;
             this.gameLoop();
-            this.playThemeMusic();
         })
     }
 
