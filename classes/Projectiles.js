@@ -1,7 +1,8 @@
 export class Projectiles {
-    constructor(x, y) {
+    constructor(x, y, direction) {
         this.x = x;
         this.y = y;
+        this.direction = direction;
 
         this.damage = 20;
 

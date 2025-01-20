@@ -11,17 +11,8 @@ const startMenu = document.getElementById("menu-screen");
 
 const startButton = document.getElementById("start-button");
 
-const volumeSlider = document.getElementById("volume-slider");
-let musicVolume = parseFloat(volumeSlider.value);
 
 
-
-volumeSlider.addEventListener("input", () => {
-    musicVolume = parseFloat(volumeSlider.value)
-    if (game.themeMusic) {
-        game.themeMusic.volume = musicVolume
-    }
-});
 
 
 
@@ -34,17 +25,20 @@ class Main {
 
         this.themeMusic = null;
 
-        this.player = new Player(50, 300, 25, 50, "blue");
+        this.initCanvas();
+        this.addEventListeners();
+
+        this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
         this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
         this.spawnActors = new SpawnActors(this.player)
         this.controls = new Controls(this.player, canvas, this.spawnActors);
         this.gameMenu = new GameMenus(ctx)
 
-        this.initCanvas();
-        this.addEventListeners();
-
         this.menus = new GameMenus();
 
+        this.previousTime = performance.now();
+        this.gameLoop = this.gameLoop.bind(this)
+        requestAnimationFrame(this.gameLoop)
     }
 
     initCanvas() {
@@ -67,17 +61,6 @@ class Main {
         });
     }
 
-    pauseThemeMusic() {
-        if (this.themeMusic && !this.themeMusic.paused) {
-            this.themeMusic.pause();
-        }
-    }
-
-    resumeThemeMusic() {
-        if (this.themeMusic && this.themeMusic.paused) {
-            this.themeMusic.play();
-        }
-    }
 
 
 
@@ -85,6 +68,9 @@ class Main {
     gameLoop = (currentTime) => {
         if (this.gameMenu) return;
         if (this.pause) return;
+
+        const deltaTime = (currentTime - this.previousTime) / 1000;
+        this.previousTime = currentTime;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -96,7 +82,7 @@ class Main {
         // }
 
         this.controls.updateMovement();
-        this.handleGameActors.updateActors();
+        this.handleGameActors.updateActors(deltaTime);
 
         requestAnimationFrame(this.gameLoop);
     };
@@ -143,12 +129,12 @@ class Main {
             startButton.disabled = true;
             startMenu.style.display = "none";
             this.gameMenu = false;
-            this.gameLoop();
+            this.gameLoop(0);
         })
     }
 
 
-        destroy() {
+    destroy() {
         document.removeEventListener("keydown", this.handleKeyDown);
         document.removeEventListener("keyup", this.handleKeyUp);
         window.removeEventListener("resize", this.handleResize);
@@ -158,5 +144,5 @@ class Main {
 
 
 
-const game = new Main();
-game.gameLoop(0);
+new Main();
+

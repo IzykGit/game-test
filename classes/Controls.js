@@ -13,9 +13,9 @@ export class Controls {
         this.jump = " ";
 
         this.stepSpeed = 10;
-        this.jumpForce = -15
+        this.jumpForce = -1200;
 
-        this.canJump = true;
+        this.canJump = false;
         this.canAttack = true;
         
         this.attackRight = "arrowright";
@@ -61,8 +61,9 @@ export class Controls {
             };
 
             if(key === this.attackLeft || key === this.attackRight) {
+                this.keys[key] = false;
                 this.canAttack = true;
-            }
+            };
 
         });
 
@@ -81,18 +82,19 @@ export class Controls {
             this.player.x += this.stepSpeed;
         };
 
-        if(this.keys[this.jump] && this.player.velocityY === 0) {
-            this.player.y -= this.stepSpeed;
-        }
-
         if(this.keys[this.attackLeft] && this.canAttack) {
-            this.spawnActors.spawnProjectile();
+            this.spawnActors.spawnProjectile(1);
             this.canAttack = false;
         }
 
         if(this.keys[this.attackRight] && this.canAttack) {
-            this.spawnActors.spawnProjectile();
+            this.spawnActors.spawnProjectile(2);
             this.canAttack = false;
+        }
+
+
+        if(this.keys[this.jump]) {
+            this.player.y -= this.stepSpeed;
         }
 
 

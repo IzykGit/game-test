@@ -25,8 +25,8 @@ export class SpawnActors extends HandleGameActors {
         }
     }
 
-    spawnProjectile() {
-        const projectile = new Projectiles(this.player.x, this.player.y + 15);
+    spawnProjectile(direction) {
+        const projectile = new Projectiles(this.player.x, this.player.y + 15, direction);
         this.addProjectile(projectile);
     }
 
