@@ -1,22 +1,24 @@
 
 
 export class Controls {
-    constructor(player, canvas, spawnActors) {
+    constructor(player, canvas, handleGameActors) {
         this.canvas = canvas;
         this.player = player;
-        this.spawnActors = spawnActors;
+        this.handleGameActors = handleGameActors;
 
         this.keys = {};
 
         this.left = "a";
         this.right = "d"
+        this.crouch = "s"
         this.jump = " ";
 
         this.stepSpeed = 10;
         this.jumpForce = -1200;
 
-        this.canJump = false;
+        this.canJump = true;
         this.canAttack = true;
+        this.isCrouching = false;
         
         this.attackRight = "arrowright";
         this.attackLeft = "arrowleft";
@@ -32,7 +34,7 @@ export class Controls {
         document.addEventListener("keydown", (event) => {
             const key = event.key.toLowerCase();
             
-            if(key === this.left || key === this.right) {
+            if(key === this.left || key === this.right || key === this.crouch) {
                 this.keys[key] = true;
             };
 
@@ -42,11 +44,11 @@ export class Controls {
                 this.canJump = false;
             }
 
-            if(key === this.attackLeft && this.canAttack) {
+            if(key === this.attackLeft && this.canAttack && !this.isCrouching) {
                 this.keys[key] = true;
             }
 
-            if(key === this.attackRight && this.canAttack) {
+            if(key === this.attackRight && this.canAttack && !this.isCrouching) {
                 this.keys[key] = true;
             }
         });
@@ -56,14 +58,24 @@ export class Controls {
 
             const key = event.key.toLowerCase();
             
-            if(key === this.left || key === this.right || key === this.jump) {
+            if(key === this.left || key === this.right) {
                 this.keys[key] = false;
-            };
+            }
+
+            if(key === this.crouch) {
+                this.keys[key] = false;
+                this.isCrouching = false;
+                this.player.height = this.player.height * 2;
+            }
+
+            if(key === this.jump) {
+                this.canJump = true;
+            }
 
             if(key === this.attackLeft || key === this.attackRight) {
                 this.keys[key] = false;
                 this.canAttack = true;
-            };
+            }
 
         });
 
@@ -82,26 +94,28 @@ export class Controls {
             this.player.x += this.stepSpeed;
         };
 
+        if(this.keys[this.crouch] && !this.isCrouching) {
+            this.player.height = this.player.height / 2;
+            this.isCrouching = true;
+        }
+
         if(this.keys[this.attackLeft] && this.canAttack) {
-            this.spawnActors.spawnProjectile(1);
+            this.handleGameActors.addAttack(1);
             this.canAttack = false;
         }
 
         if(this.keys[this.attackRight] && this.canAttack) {
-            this.spawnActors.spawnProjectile(2);
+            this.handleGameActors.addAttack(2);
             this.canAttack = false;
         }
 
 
-        if(this.keys[this.jump]) {
-            this.player.y -= this.stepSpeed;
+        if(this.player.velocityY !== 0) {
+            this.canJump = false;
         }
-
-
-        if(this.player.velocityY === 0) {
+        else {
             this.canJump = true;
         }
-
 
         if (this.player.x < 0) this.player.x = 0;
         if (this.player.x + this.player.width > this.canvas.width) this.player.x = this.canvas.width - this.player.width;

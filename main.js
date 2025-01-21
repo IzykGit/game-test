@@ -30,8 +30,7 @@ class Main {
 
         this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
         this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
-        this.spawnActors = new SpawnActors(this.player)
-        this.controls = new Controls(this.player, canvas, this.spawnActors);
+        this.controls = new Controls(this.player, canvas, this.handleGameActors);
         this.gameMenu = new GameMenus(ctx)
 
         this.menus = new GameMenus();

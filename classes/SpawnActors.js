@@ -1,14 +1,11 @@
 import { HandleGameActors } from "./HandleGameActors.js";
-import { Projectiles } from "./Projectiles.js";
 import { PowerUps } from "./PowerUps.js";
 
 
 export class SpawnActors extends HandleGameActors {
-    constructor(player) {
-        super();
+    constructor(player, canvas, ctx) {
+        super(player, canvas, ctx);
         this.player = player;
-        this.eventBus = new EventTarget();
-
     }
 
     updateInterval() {
@@ -25,10 +22,6 @@ export class SpawnActors extends HandleGameActors {
         }
     }
 
-    spawnProjectile(direction) {
-        const projectile = new Projectiles(this.player.x, this.player.y + 15, direction);
-        this.addProjectile(projectile);
-    }
 
 
     spawnPowerUp(type, color) {

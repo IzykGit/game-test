@@ -1,0 +1,22 @@
+{
+    "grunt": {
+        "health": 100,
+        "damage": 10,
+        "speed": 15
+    },
+    "archer": {
+        "health": 125,
+        "damage": 20,
+        "speed": 10
+    },
+    "bug": {
+        "health": 50,
+        "damage": 10,
+        "speed": 20
+    },
+    "heavy": {
+        "health": 200,
+        "damage": 50,
+        "speed": 5
+    }
+}
