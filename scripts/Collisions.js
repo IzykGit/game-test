@@ -1,33 +1,34 @@
 
+export function collidingSide(object1, object2) {
 
-export const collisionCheck = (object1, object2) => {
-    if(!object1 || !object2) return;
+    const ObjectOneCenterX = object1.x + object1.width / 2;
+    const ObjectOneCenterY = object1.y + object1.height / 2;
 
-    if (
-        object1.x <= object2.x + object2.width &&
-        object1.x  + object1.width >= object2.width &&
-        object1.y <= object2.y + object2.height &&
-        object1.y + object1.height >= object2.height
-    ) {
-        const overlapLeft = object2.x + object2.width - object1.x; 
-        const overlapRight = object1.x + object1.width - object2.x; 
-        const overlapTop = object2.y + object2.height - object1.y; 
-        const overlapBottom = object1.y + object1.height - object2.y; 
+    const ObjectTwoCenterX = object2.x + object2.width / 2;
+    const ObjectTwoCenterY = object2.y + object2.height / 2;
 
-        const smallest = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+    const deltaX = ObjectOneCenterX - ObjectTwoCenterX;
+    const deltaY = ObjectOneCenterY - ObjectTwoCenterY;
 
-        if (smallest === overlapLeft) {
-            return 1; // left
-        } else if (smallest === overlapRight) {
-            return 2; // right
-        } else if (smallest === overlapTop) {
-            return 3; // top
+    const combinedHalfWidths = (object1.width + object2.width) / 2;
+    const combinedHalfHeights = (object1.height + object2.height) / 2;
+
+    const overlapX = combinedHalfWidths - Math.abs(deltaX);
+    const overlapY = combinedHalfHeights - Math.abs(deltaY);
+
+    if (overlapX < overlapY) {
+        if (deltaX > 0) {
+            return 'left';
         } else {
-            return 4; //bottom
+            return 'right'; 
+        }
+    } else {
+        if (deltaY > 0) {
+            return 'top';
+        } else {
+            return 'bottom';
         }
     }
-
-    return null;
 }
 
 

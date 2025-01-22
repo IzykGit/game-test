@@ -8,20 +8,12 @@ export class SpawnActors extends HandleGameActors {
         this.player = player;
     }
 
-    updateInterval() {
     
-        if (enemySpawnInterval >= 1000) {
-            return enemySpawnInterval -= player.playerScore;
-        }
-    
-        if (spawnNumber === 4) {
-            return;
-        }
-        else {
-            return spawnNumber += 1;
+    spawnEnemy() {
+        if(this.player.playerScore === 0) {
+            this.addEnemy(new Enemy(this.player.x, this.player.y, 20, 40, "red"))
         }
     }
-
 
 
     spawnPowerUp(type, color) {

@@ -1,6 +1,7 @@
 import { Controls } from "./classes/Controls.js";
 import { GameMenus } from "./classes/GameMenus.js";
 import { HandleGameActors } from "./classes/HandleGameActors.js";
+import { HandleTypes } from "./classes/HandleTypes.js";
 import { Player } from "./classes/Player.js";
 import { SpawnActors } from "./classes/SpawnActors.js";
 
@@ -10,10 +11,6 @@ const ctx = canvas.getContext("2d");
 const startMenu = document.getElementById("menu-screen");
 
 const startButton = document.getElementById("start-button");
-
-
-
-
 
 
 
@@ -28,18 +25,26 @@ class Main {
         this.initCanvas();
         this.addEventListeners();
 
+
+        // initializing main classes
         this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
+        this.handleTypes = new HandleTypes();
         this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
-        this.controls = new Controls(this.player, canvas, this.handleGameActors);
+        this.spawnActors = new SpawnActors(this.player, this.canvas, this.ctx, this.handleTypes)
+        this.controls = new Controls(this.player, canvas, this.handleGameActors, this.handleTypes);
         this.gameMenu = new GameMenus(ctx)
 
         this.menus = new GameMenus();
 
+
+        // gettting previous time for deltaTime
         this.previousTime = performance.now();
         this.gameLoop = this.gameLoop.bind(this)
         requestAnimationFrame(this.gameLoop)
     }
 
+
+    // setting canvas size based on screen size
     initCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -63,7 +68,7 @@ class Main {
 
 
 
-
+    // gameloop
     gameLoop = (currentTime) => {
         if (this.gameMenu) return;
         if (this.pause) return;
@@ -84,8 +89,10 @@ class Main {
         this.handleGameActors.updateActors(deltaTime);
 
         requestAnimationFrame(this.gameLoop);
-    };
+    }; 
 
+
+    // resetting main classes
     resetGame() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -93,14 +100,14 @@ class Main {
         this.isGameOver = false;
         this.pause = false;
 
-        this.themeMusic.currentTime = 0;
-
         startMenu.style.display = "flex";
         startButton.disabled = false;
 
         this.gameMenu = true;
     }
 
+
+    // handling pause menu and start button
     addEventListeners() {
         document.addEventListener("keydown", (event) => {
             if (event.key === "Escape") {
@@ -132,7 +139,7 @@ class Main {
         })
     }
 
-
+    // event listener cleanup
     destroy() {
         document.removeEventListener("keydown", this.handleKeyDown);
         document.removeEventListener("keyup", this.handleKeyUp);

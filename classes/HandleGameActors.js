@@ -1,5 +1,6 @@
-import { collisionCheck, isColliding } from "../scripts/Collisions.js";
+import { collidingSide, isColliding } from "../scripts/Collisions.js";
 import { Attack } from "./Attack.js";
+import { Enemy } from "./Enemy.js";
 
 export class HandleGameActors {
     constructor (player, canvas, ctx) {
@@ -8,29 +9,21 @@ export class HandleGameActors {
         this.ctx = ctx;
 
         this.enemies = [];
-        this.attacks = [];
+        this.attacksArr = [];
         this.powerUps = [];   
-        
-        this.attackSpeed = 800;
-        
+                
         this.frictionConstant = 0.9;
         this.gravityConstant = 4000;
 
         this.eventBus = new EventTarget();
-    }
+    }    
 
-    get allEntities() {
-        return [this.player, this.enemies]
-    }
-
-    
-
-    addEnemy(enemy) {
-        this.enemies.push(enemy)
+    addEnemy() {
+        this.enemies.push(new Enemy(this.player.x, this.player.y, 20, 40, "red"))
     }
 
     addAttack(direction) {
-        this.attacks.push(new Attack(this.player.x, this.player.y + 15, direction));
+        this.attacksArr.push(new Attack(this.player.x, this.player.y + 15, direction));
     }
 
     addPowerUp(powerUp) {
@@ -106,72 +99,99 @@ export class HandleGameActors {
     }
 
     applyAttackAcceleration(deltaTime) {
-        for(let i = 0; i < this.attacks.length; i++) {
-            if(this.attacks[i].direction === 1) {
-                this.attacks[i].x -= this.attackSpeed * deltaTime;
+        for(let i = 0; i < this.attacksArr.length; i++) {
+            if(this.attacksArr[i].direction === 1) {
+                this.attacksArr[i].x -= this.attacksArr[i].attackSpeed * deltaTime;
             }
-            if(this.attacks[i].direction === 2) {
-                this.attacks[i].x += this.attackSpeed * deltaTime;
+            if(this.attacksArr[i].direction === 2) {
+                this.attacksArr[i].x += this.attacksArr[i].attackSpeed * deltaTime;
             }
         }
-
     }
 
     outOfBounds() {
-        if(this.attacks.length === 0) return;
-        for(let i = this.attacks.length - 1; i >= 0; i--) {
-            if(this.attacks[i].x < 0 || this.attacks[i].x + this.attacks[i].width >= this.canvas.width) {
-                this.attacks.splice(i, 1);
+        if(this.attacksArr.length === 0) return;
+        for(let i = this.attacksArr.length - 1; i >= 0; i--) {
+            if(this.attacksArr[i].x < 0 || this.attacksArr[i].x + this.attacksArr[i].width >= this.canvas.width) {
+                this.attacksArr.splice(i, 1);
             }
         }
     }
     
 
-    handleEntityCollisions() {
+    handleEntityCollisions() {  
 
-        const entities = this.allEntities;
+        for(let i = 0; i < this.enemies.length; i++) {
+            for(let j = i + 1; j < this.enemies.length; j++) {
+                if(isColliding(this.enemies[i], this.enemies[j])) {
+                    const collideState = collidingSide(this.enemies[i], this.enemies[j]);
 
-        for(let i = 0; i < entities.length; i++) {
-            for(let j = i + 1; j < entities.length; j++) {
-
-                const collideState = collisionCheck(entities[i], entities[j]);
-
-                switch(collideState) {
-                    case 1:
-                        entities[i].x = entities[j].x + entities[j].width;
-                        break;
-                    case 2:
-                        entities[i].x = entities[j].x - entities[i].width;
-                        break;
-                    case 3:
-                        entities[i].y = entities[j].y + entities[j].height; 
-                        entities[i].velocityY = 0;
-                        break;
-                    case 4:
-                        entities[i].y = entities[j].y - entities[i].height; 
-                        entities[i].velocityY = 0; 
+                    switch(collideState) {
+                        case "left":
+                            this.enemies[i].x = this.enemies[j].x + this.enemies[j].width;
+                            break;
+                        case "right":
+                            this.enemies[i].x = this.enemies[j].x - this.enemies[i].width;
+                            break;
+                        case "top":
+                            this.enemies[i].y = this.enemies[j].y + this.enemies[j].height; 
+                            this.enemies[i].velocityY = 0;
+                            break;
+                        case "bottom":
+                            this.enemies[i].y = this.enemies[j].y - this.enemies[i].height; 
+                            this.enemies[i].velocityY = 0; 
+                    }
                 }
             }
         }
     }
 
+    handlePlayerOnEntityCollisions() {  
+
+        for(let i = 0; i < this.enemies.length; i++) {
+            if(isColliding(this.player, this.enemies[i])) {
+                const collideState = collidingSide(this.player, this.enemies[i]);
+
+                switch(collideState) {
+                    case "left":
+                        this.player.x = this.enemies[i].x + this.enemies[i].width;
+                        this.player.velocityX = 0;
+                        break;
+                    case "right":
+                        this.player.x = this.enemies[i].x - this.player.width;
+                        this.player.velocityX = 0;
+                        break;
+                    case "top":
+                        this.player.y = this.enemies[i].y + this.enemies[i].height; 
+                        this.player.velocityY = 0;
+                        break;
+                    case "bottom":
+                        this.player.y = this.enemies[i].y - this.player.height; 
+                        this.player.velocityY = 0; 
+                }
+            }
+        }
+    }
+
+    
 
 
-    handleattackCollisions = () => {
+
+    handlAttackCollisions() {
         for (let i = 0; i < this.enemies.length; i++) {
-            for (let j = 0; j < this.attacks.length; j++) {
-                if (isColliding(this.enemies[i], this.attacks[j])) {        
-                    this.enemies[i].health -= this.attacks[j].damage;
-                    this.attacks.splice(j, 1);
+            for (let j = 0; j < this.attacksArr.length; j++) {
+                if (isColliding(this.enemies[i], this.attacksArr[j])) {        
+                    this.enemies[i].health -= this.attacksArr[j].damage;
+                    this.attacksArr.splice(j, 1);
                     j--;
                 }
             }
         }
 
-        for(let i = 0; i < this.attacks.length; i++) {
+        for(let i = 0; i < this.attacksArr.length; i++) {
 
-            if(this.attacks[i].x < 0 || this.attacks[i].x + this.attacks[i].width >= this.canvas.width) {
-                this.attacks.slice(i, 1)
+            if(this.attacksArr[i].x < 0 || this.attacksArr[i].x + this.attacksArr[i].width >= this.canvas.width) {
+                this.attacksArr.slice(i, 1)
                 i--;
             }
         }
@@ -179,7 +199,7 @@ export class HandleGameActors {
 
 
 
-    handlePowerUpCollisions = () => {    
+    handlePowerUpCollisions() {    
         for (let i = this.powerUps.length - 1; i >= 0; i--) {        
             if (isColliding(this.player, this.powerUps[i])) {
                 switch (powerUps[i].type) {
@@ -195,7 +215,7 @@ export class HandleGameActors {
         }
     };
 
-    updatePowerUps = () => {    
+    updatePowerUps() {    
         if (this.powerUps.length > 0) {
             for (let i = this.powerUps.length - 1; i >= 0; i--) {        
                 if (this.powerUps[i].y > this.canvas.height) {
@@ -219,9 +239,9 @@ export class HandleGameActors {
             this.ctx.fillRect(this.powerUps[i].x, this.powerUps[i].y, this.powerUps[i].width, this.powerUps[i].height)
         }
 
-        for(let i = 0; i < this.attacks.length; i++) {
-            this.ctx.fillStyle = this.attacks[i].color;
-            this.ctx.fillRect(this.attacks[i].x, this.attacks[i].y, this.attacks[i].width, this.attacks[i].height);
+        for(let i = 0; i < this.attacksArr.length; i++) {
+            this.ctx.fillStyle = this.attacksArr[i].color;
+            this.ctx.fillRect(this.attacksArr[i].x, this.attacksArr[i].y, this.attacksArr[i].width, this.attacksArr[i].height);
         }
     }
 
@@ -234,8 +254,9 @@ export class HandleGameActors {
         this.applyAttackAcceleration(deltaTime);
         this.outOfBounds();
 
-        this.handleattackCollisions();
+        this.handlAttackCollisions();
         this.handleEntityCollisions();
+        this.handlePlayerOnEntityCollisions();
         this.handlePowerUpCollisions();
 
         this.updatePowerUps();

@@ -7,14 +7,10 @@ export class Enemy {
         this.width = width;
         this.height = height;
 
-        this.type = type;
-
         this.health = 100;
 
         this.velocityY = 0;
-
-        this.speed = 4;
-
+        this.velocityX = 0;
     }
 
 

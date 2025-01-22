@@ -4,13 +4,6 @@
 
 
 
-let randomXAxisPoint = null; 
-
-
-const collidingWith = new Set();
-
-const deathSound = new Audio("../assets/sounds/death.wav");
-const enemydeathSound = new Audio("../assets/sounds/enemyDeath.wav")
 
 
 const scoreBoard = document.getElementById("player-score")
@@ -20,23 +13,6 @@ scoreBoard.innerHTML = "Score: 0";
 let enemySpawnInterval = 2000;
 let lastSpawnTime = 0;
 let spawnNumber = 2;
-
-
-const updateInterval = () => {
-
-    const player = getPlayer()
-
-    if (enemySpawnInterval >= 1000) {
-        return enemySpawnInterval -= player.playerScore;
-    }
-
-    if (spawnNumber === 4) {
-        return;
-    }
-    else {
-        return spawnNumber += 1;
-    }
-}
 
 
 

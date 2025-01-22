@@ -1,16 +1,18 @@
 
 
 export class Controls {
-    constructor(player, canvas, handleGameActors) {
+    constructor(player, canvas, handleGameActors, handleTypes) {
         this.canvas = canvas;
         this.player = player;
         this.handleGameActors = handleGameActors;
+        this.handleTypes = handleTypes;
 
         this.keys = {};
 
         this.left = "a";
-        this.right = "d"
-        this.crouch = "s"
+        this.right = "d";
+        this.crouch = "s";
+        this.switchAttack = "e";
         this.jump = " ";
 
         this.stepSpeed = 10;
@@ -22,22 +24,25 @@ export class Controls {
         
         this.attackRight = "arrowright";
         this.attackLeft = "arrowleft";
-
-        this.jumpAudio = new Audio("../assets/sounds/jump.wav");
         
 
         this.addEventListeners();
  
     }
 
+
+    // activate action events
     addEventListeners() {
         document.addEventListener("keydown", (event) => {
             const key = event.key.toLowerCase();
             
             if(key === this.left || key === this.right || key === this.crouch) {
                 this.keys[key] = true;
-            };
+            }
 
+            if(key === this.switchAttack) {
+                this.handleGameActors.addEnemy()
+            }
 
             if(key === this.jump && this.canJump) {
                 this.player.velocityY = this.jumpForce;
@@ -53,7 +58,7 @@ export class Controls {
             }
         });
 
-        
+        // cancel actions events
         document.addEventListener("keyup", (event) => {
 
             const key = event.key.toLowerCase();
@@ -78,10 +83,9 @@ export class Controls {
             }
 
         });
-
     }
 
-
+    // update actions performed by the player
     updateMovement() {
         
         if(this.keys[this.left]) {

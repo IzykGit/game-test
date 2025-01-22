@@ -15,11 +15,9 @@ export class Player {
 
         this.playerHealth = 100;
 
-        this.damageConstant = 10;
-
         this.hasSpawned = false;
         
-        this.damageAudio = new Audio('../assets/sounds/hitHurt.wav')
+        this.selectedAttack = "projectile";
     }
 
 
@@ -33,16 +31,6 @@ export class Player {
 
         ctx.fillStyle = "green"; 
         ctx.fillRect(50, 50, barWidth * healthPercentage, barHeight);
-    }
-
-
-    takeDamage() {
-        if (this.playerHealth > 0) {
-            this.playerHealth -= this.damageConstant;
-        }
-        else {
-            return;
-        }
     }
     
 }
