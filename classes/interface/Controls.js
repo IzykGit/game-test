@@ -1,11 +1,10 @@
 
 
 export class Controls {
-    constructor(player, canvas, handleGameActors, handleTypes) {
+    constructor(player, canvas, gameState) {
         this.canvas = canvas;
         this.player = player;
-        this.handleGameActors = handleGameActors;
-        this.handleTypes = handleTypes;
+        this.gameState = gameState;
 
         this.keys = {};
 
@@ -15,19 +14,19 @@ export class Controls {
         this.switchAttack = "e";
         this.jump = " ";
 
-        this.stepSpeed = 10;
+        this.stepSpeed = 2;
         this.jumpForce = -1200;
 
         this.canJump = true;
         this.canAttack = true;
         this.isCrouching = false;
-        
+
         this.attackRight = "arrowright";
         this.attackLeft = "arrowleft";
-        
+
 
         this.addEventListeners();
- 
+
     }
 
 
@@ -35,25 +34,27 @@ export class Controls {
     addEventListeners() {
         document.addEventListener("keydown", (event) => {
             const key = event.key.toLowerCase();
-            
-            if(key === this.left || key === this.right || key === this.crouch) {
+
+            if (key === this.left || key === this.right || key === this.crouch) {
                 this.keys[key] = true;
             }
 
-            if(key === this.switchAttack) {
-                this.handleGameActors.addEnemy()
+            if (key === this.switchAttack) {
+                const currentAttack = this.gameState.selectedAttack.type;
+                console.log(currentAttack)
+                this.gameState.updateSelectedAttack();
             }
 
-            if(key === this.jump && this.canJump) {
+            if (key === this.jump && this.canJump) {
                 this.player.velocityY = this.jumpForce;
                 this.canJump = false;
             }
 
-            if(key === this.attackLeft && this.canAttack && !this.isCrouching) {
+            if (key === this.attackLeft && this.canAttack && !this.isCrouching) {
                 this.keys[key] = true;
             }
 
-            if(key === this.attackRight && this.canAttack && !this.isCrouching) {
+            if (key === this.attackRight && this.canAttack && !this.isCrouching) {
                 this.keys[key] = true;
             }
         });
@@ -62,22 +63,22 @@ export class Controls {
         document.addEventListener("keyup", (event) => {
 
             const key = event.key.toLowerCase();
-            
-            if(key === this.left || key === this.right) {
+
+            if (key === this.left || key === this.right) {
                 this.keys[key] = false;
             }
 
-            if(key === this.crouch) {
+            if (key === this.crouch) {
                 this.keys[key] = false;
                 this.isCrouching = false;
                 this.player.height = this.player.height * 2;
             }
 
-            if(key === this.jump) {
+            if (key === this.jump) {
                 this.canJump = true;
             }
 
-            if(key === this.attackLeft || key === this.attackRight) {
+            if (key === this.attackLeft || key === this.attackRight) {
                 this.keys[key] = false;
                 this.canAttack = true;
             }
@@ -87,34 +88,34 @@ export class Controls {
 
     // update actions performed by the player
     updateMovement() {
-        
-        if(this.keys[this.left]) {
+
+        if (this.keys[this.left]) {
             this.player.velocityX -= this.stepSpeed;
             this.player.x -= this.stepSpeed;
         };
-        
-        if(this.keys[this.right]) {
+
+        if (this.keys[this.right]) {
             this.player.velocityX += this.stepSpeed;
             this.player.x += this.stepSpeed;
         };
 
-        if(this.keys[this.crouch] && !this.isCrouching) {
+        if (this.keys[this.crouch] && !this.isCrouching) {
             this.player.height = this.player.height / 2;
             this.isCrouching = true;
         }
 
-        if(this.keys[this.attackLeft] && this.canAttack) {
-            this.handleGameActors.addAttack(1);
+        if (this.keys[this.attackLeft] && this.canAttack) {
+            this.gameState.addAttack(1);
             this.canAttack = false;
         }
 
-        if(this.keys[this.attackRight] && this.canAttack) {
-            this.handleGameActors.addAttack(2);
+        if (this.keys[this.attackRight] && this.canAttack) {
+            this.gameState.addAttack(2);
             this.canAttack = false;
         }
 
 
-        if(this.player.velocityY !== 0) {
+        if (this.player.velocityY !== 0) {
             this.canJump = false;
         }
         else {

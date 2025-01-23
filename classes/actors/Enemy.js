@@ -12,8 +12,4 @@ export class Enemy {
         this.velocityY = 0;
         this.velocityX = 0;
     }
-
-    isOffScreen(canvas) {
-        return this.y > canvas.height;
-    }
 }

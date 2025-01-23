@@ -1,12 +1,11 @@
-import { Collisions } from "./classes/Collisions.js";
-import { Controls } from "./classes/Controls.js";
-import { GameMenus } from "./classes/GameMenus.js";
-import { HandleTypes } from "./classes/HandleTypes.js";
-import { Player } from "./classes/Player.js";
-import { Physics } from "./classes/Physics.js";
-import { SpawnActors } from "./classes/SpawnActors.js";
-import { GameState } from "./classes/GameState.js";
-import { PathFinding } from "./classes/Pathfinding.js";
+import { Collisions } from "./classes/physics/Collisions.js";
+import { Controls } from "./classes/interface/Controls.js";
+import { GameMenus } from "./classes/interface/GameMenus.js";
+import { Player } from "./classes/actors/Player.js";
+import { Physics } from "./classes/physics/Physics.js";
+import { SpawnActors } from "./classes/actions/SpawnActors.js";
+import { GameState } from "./classes/states/GameState.js";
+import { PathFinding } from "./classes/actions/Pathfinding.js";
 
 const canvas = document.getElementById("root");
 const ctx = canvas.getContext("2d");
@@ -30,15 +29,14 @@ class Main {
         this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
         this.gameState = new GameState(this.player, canvas, ctx)
 
-        this.handleTypes = new HandleTypes();
-        this.spawnActors = new SpawnActors(this.gameState, canvas, ctx, this.handleTypes);
+        this.spawnActors = new SpawnActors(this.gameState, canvas, ctx);
         this.collisions = new Collisions(this.gameState, canvas, ctx)
         this.physics = new Physics(this.gameState, canvas, ctx)
         this.pathFinding = new PathFinding(this.gameState, canvas, ctx)
 
         this.gameMenu = new GameMenus(ctx);
-        this.controls = new Controls(this.player, canvas, this.gameState, this.handleTypes);
-        
+        this.controls = new Controls(this.player, canvas, this.gameState);
+
         // gettting previous time for deltaTime
         this.previousTime = performance.now();
         this.gameLoop = this.gameLoop.bind(this)
@@ -65,7 +63,6 @@ class Main {
 
         // if (handler === 0) {
         //     this.menus.drawGameOver();
-        //     this.pauseThemeMusic();
         //     this.isGameOver = true;
         //     return;
         // }
@@ -78,7 +75,7 @@ class Main {
         this.gameState.updateActors();
 
         requestAnimationFrame(this.gameLoop);
-    }; 
+    };
 
 
     // resetting main classes
@@ -103,7 +100,7 @@ class Main {
                 if (this.isGameOver) {
                     this.resetGame();
 
-                } else if (!this.gameMenu){
+                } else if (!this.gameMenu) {
 
                     this.pause = !this.pause;
                     if (!this.pause) {

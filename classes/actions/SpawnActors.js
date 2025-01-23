@@ -1,5 +1,5 @@
-import { Enemy } from "./Enemy.js";
-import { PowerUps } from "./PowerUps.js";
+import { Enemy } from "../actors/Enemy.js";
+import { PowerUps } from "../actors/PowerUps.js";
 
 
 export class SpawnActors{

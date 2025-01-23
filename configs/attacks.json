@@ -1,16 +1,18 @@
 {
-    "projectile": {
-        "damage": 20,
-        "speed": 800,
-        "width": 15,
-        "height": 15,
-        "color": "grey"
-    },
-    "bomb": {
-        "damage": 50,
-        "speed": 400,
-        "width": 10,
-        "height": 15,
-        "color": "red"
-    }
+  "projectile": {
+    "type": "projectile",
+    "damage": 20,
+    "speed": 800,
+    "width": 15,
+    "height": 15,
+    "color": "grey"
+  },
+  "bomb": {
+    "type": "bomb",
+    "damage": 50,
+    "speed": 500,
+    "width": 20,
+    "height": 20,
+    "color": "red"
+  }
 }

@@ -16,21 +16,21 @@ export class Player {
         this.playerHealth = 100;
 
         this.hasSpawned = false;
-        
+
         this.selectedAttack = "projectile";
     }
 
 
     drawHealthBar(ctx) {
-        const barWidth = 250; 
-        const barHeight = 25; 
+        const barWidth = 250;
+        const barHeight = 25;
         const healthPercentage = this.playerHealth / 100;
 
-        ctx.fillStyle = "red"; 
+        ctx.fillStyle = "red";
         ctx.fillRect(50, 50, barWidth, barHeight);
 
-        ctx.fillStyle = "green"; 
+        ctx.fillStyle = "green";
         ctx.fillRect(50, 50, barWidth * healthPercentage, barHeight);
     }
-    
+
 }

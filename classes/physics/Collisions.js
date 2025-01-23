@@ -1,4 +1,4 @@
-import { collidingSide, isColliding } from "../scripts/CollisionFunctions.js";
+import { collidingSide, isColliding } from "../../scripts/CollisionFunctions.js";
 
 
 export class Collisions {
@@ -12,7 +12,6 @@ export class Collisions {
         this.enemies = enemies;
         this.attacksArr = attacksArr;
         this.powerUps = powerUps;
-
     }
 
     handleEnemyOnEnemy() {
