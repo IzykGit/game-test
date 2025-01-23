@@ -13,20 +13,6 @@ export class Enemy {
         this.velocityX = 0;
     }
 
-
-    // moves enemy in the direction of the player
-    move(playerX, playerY, playerWidth) {
-        const dx = (playerX + playerWidth) - (this.x + 1);
-        const dy = playerY - this.y;
-
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance > 0 && this.velocityY === 0) {
-            this.x += (dx / distance) * this.speed;
-
-        }
-    }
-
     isOffScreen(canvas) {
         return this.y > canvas.height;
     }

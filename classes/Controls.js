@@ -120,8 +120,5 @@ export class Controls {
         else {
             this.canJump = true;
         }
-
-        if (this.player.x < 0) this.player.x = 0;
-        if (this.player.x + this.player.width > this.canvas.width) this.player.x = this.canvas.width - this.player.width;
     };
 }

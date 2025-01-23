@@ -1,9 +1,12 @@
+import { Collisions } from "./classes/Collisions.js";
 import { Controls } from "./classes/Controls.js";
 import { GameMenus } from "./classes/GameMenus.js";
-import { HandleGameActors } from "./classes/HandleGameActors.js";
 import { HandleTypes } from "./classes/HandleTypes.js";
 import { Player } from "./classes/Player.js";
+import { Physics } from "./classes/Physics.js";
 import { SpawnActors } from "./classes/SpawnActors.js";
+import { GameState } from "./classes/GameState.js";
+import { PathFinding } from "./classes/Pathfinding.js";
 
 const canvas = document.getElementById("root");
 const ctx = canvas.getContext("2d");
@@ -11,8 +14,6 @@ const ctx = canvas.getContext("2d");
 const startMenu = document.getElementById("menu-screen");
 
 const startButton = document.getElementById("start-button");
-
-
 
 class Main {
     constructor() {
@@ -25,18 +26,19 @@ class Main {
         this.initCanvas();
         this.addEventListeners();
 
-
         // initializing main classes
         this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
+        this.gameState = new GameState(this.player, canvas, ctx)
+
         this.handleTypes = new HandleTypes();
-        this.handleGameActors = new HandleGameActors(this.player, canvas, ctx);
-        this.spawnActors = new SpawnActors(this.player, this.canvas, this.ctx, this.handleTypes)
-        this.controls = new Controls(this.player, canvas, this.handleGameActors, this.handleTypes);
-        this.gameMenu = new GameMenus(ctx)
+        this.spawnActors = new SpawnActors(this.gameState, canvas, ctx, this.handleTypes);
+        this.collisions = new Collisions(this.gameState, canvas, ctx)
+        this.physics = new Physics(this.gameState, canvas, ctx)
+        this.pathFinding = new PathFinding(this.gameState, canvas, ctx)
 
-        this.menus = new GameMenus();
-
-
+        this.gameMenu = new GameMenus(ctx);
+        this.controls = new Controls(this.player, canvas, this.gameState, this.handleTypes);
+        
         // gettting previous time for deltaTime
         this.previousTime = performance.now();
         this.gameLoop = this.gameLoop.bind(this)
@@ -48,24 +50,7 @@ class Main {
     initCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
-
-        window.addEventListener("resize", () => {
-            if (window.innerWidth < 1920) {
-                canvas.width = window.innerWidth;
-                startMenu.width = window.innerWidth;
-            }
-            else {
-                canvas.width = 1920;
-                startMenu.width = 1920;
-            }
-
-            canvas.height = window.innerHeight;
-            startMenu.height = canvas.height;
-        });
     }
-
-
 
 
     // gameloop
@@ -86,7 +71,11 @@ class Main {
         // }
 
         this.controls.updateMovement();
-        this.handleGameActors.updateActors(deltaTime);
+        this.physics.updatePhysics(deltaTime);
+        this.collisions.updateCollisions()
+        this.player.drawHealthBar(ctx);
+        this.pathFinding.updatePathfinding();
+        this.gameState.updateActors();
 
         requestAnimationFrame(this.gameLoop);
     }; 
@@ -121,9 +110,7 @@ class Main {
                         this.pauseAudio.play();
                         this.gameLoop(performance.now());
                     } else {
-                        this.pauseThemeMusic();
-                        this.menus.drawPauseMenu()
-                        this.pauseAudio.play();
+                        this.gameMenu.drawPauseMenu()
                     }
 
                 }
@@ -139,7 +126,7 @@ class Main {
         })
     }
 
-    // event listener cleanup
+    // event listeners cleanup
     destroy() {
         document.removeEventListener("keydown", this.handleKeyDown);
         document.removeEventListener("keyup", this.handleKeyUp);
@@ -147,8 +134,6 @@ class Main {
     }
 
 }
-
-
 
 new Main();
 
