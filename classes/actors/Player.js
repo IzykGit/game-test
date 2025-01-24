@@ -18,6 +18,10 @@ export class Player {
         this.hasSpawned = false;
     }
 
+    addPoints(points) {
+        this.playerScore += points;
+    }
+
 
     drawHealthBar(ctx) {
         const barWidth = 250;

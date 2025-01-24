@@ -72,12 +72,17 @@ export class Collisions {
             for (let j = this.attacksArr.length - 1; j >= 0; j--) {
                 if (this.attacksArr[j].type === "projectile") {
                     if (isColliding(this.enemies[i], this.attacksArr[j])) {
-                        this.enemies[i].health -= this.attacksArr[j].damage;
+
+                        this.enemies[i].takeDamage(this.attacksArr[j].damage);
+
                         this.attacksArr.splice(j, 1);
+
                         if (this.enemies[i].health <= 0) {
+                            this.player.addPoints(this.enemies[i].pointValue)
                             this.enemies.splice(i, 1)
                             i--
                         }
+
                         break;
                     }
                 }
@@ -90,6 +95,7 @@ export class Collisions {
     handlePowerUpCollisions() {
         for (let i = this.powerUps.length - 1; i >= 0; i--) {
             if (isColliding(this.player, this.powerUps[i])) {
+
                 switch (powerUps[i].type) {
                     case "health":
                         this.player.playerHealth += 20;

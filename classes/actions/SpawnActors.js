@@ -1,7 +1,6 @@
 import { PowerUps } from "../actors/PowerUps.js";
 
-
-export class SpawnActors{
+export class SpawnActors {
     constructor(gameState, canvas, ctx) {
         this.gameState = gameState;
         this.canvas = canvas;
@@ -14,32 +13,28 @@ export class SpawnActors{
         this.attackArr = attackArr;
         this.powerUps = powerUps;
 
-        this.currentTime = 0;
-        this.intervalTime = 0;
+        this.currentTime = 0; 
+        this.lastSpawnTime = 0; 
+        this.enemySpawnInterval = 3000; 
     }
 
-    updateTimeInterval() {
-
-    }
-    
     spawnEnemy() {
-        if(this.currentTime % 6000 === 0) {
-            this.gameState.addEnemy()
-        }
+        this.gameState.addEnemy();
     }
-
 
     spawnPowerUp(type, color) {
         const x = Math.random() * (this.canvas.width - 40);
         const powerUp = new PowerUps(x, -30, type, color);
+        this.powerUps.push(powerUp); 
     }
 
-
     spawnUpdate(currentTime) {
-        this.spawnEnemy();
-
-        
-
         this.currentTime = currentTime;
+
+
+        if (this.currentTime - this.lastSpawnTime >= this.enemySpawnInterval) {
+            this.spawnEnemy();
+            this.lastSpawnTime = this.currentTime; 
+        }
     }
 }

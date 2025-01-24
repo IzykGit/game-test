@@ -11,8 +11,8 @@ export class GameState {
         this.attacksArr = [];
         this.powerUps = [];
 
-        this.attackTypes = this.getAttackTypes();
-        this.enemyTypes = this.getEnemyTypes();
+        this.attackTypes = {};
+        this.enemyTypes = {};
         this.powerUpTypes = {};
 
         this.selectedAttack = {};
@@ -26,7 +26,17 @@ export class GameState {
 
 
     addEnemy() {
-        this.enemies.push(new Enemy(this.player.x, this.player.y, 20, 40, "red"))
+        const randomXAxisPoints = Math.random() * (this.canvas.width - 40);
+        const score = this.player.playerScore;
+
+        console.log(score)
+
+        const enemyKeys = Object.keys(this.enemyTypes);
+        console.log({...this.enemyTypes[enemyKeys[0]]})
+
+        if(score < 300){
+            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[0]]}))
+        }
     }
 
     addAttack(direction) {
