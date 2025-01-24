@@ -101,7 +101,7 @@ export class Physics {
         }
     }
 
-    applyProjectileAcceleration() {
+    applyProjectileMechanics() {
         for (let i = 0; i < this.attacksArr.length; i++) {
             if (this.attacksArr[i].type === "projectile") {
                 if (this.attacksArr[i].direction === 1) {
@@ -114,8 +114,8 @@ export class Physics {
         }
     }
 
-    applyBombAcceleration() {
-        for (let i = 0; i < this.attacksArr.length; i++) {
+    applyBombMechanics() {
+        for (let i = this.attacksArr.length - 1; i >= 0; i--) {
             if (this.attacksArr[i].type === "bomb" && !this.attacksArr[i].isThrown) {
                 if (this.attacksArr[i].direction === 1) {
                     this.attacksArr[i].velocityY = -1200;
@@ -127,6 +127,13 @@ export class Physics {
                 }
 
                 this.attacksArr[i].isThrown = true;
+            }
+
+            if(this.attacksArr[i].timer >= 0) {
+                this.attacksArr[i].timer -= 0.6;
+            }
+            else {
+                this.attacksArr.splice(i, 1)
             }
         }
     }
@@ -156,8 +163,8 @@ export class Physics {
     updatePhysics(deltaTime) {
         this.applyGravity();
         this.applyInertia();
-        this.applyProjectileAcceleration();
-        this.applyBombAcceleration();
+        this.applyProjectileMechanics();
+        this.applyBombMechanics();
         this.outOfBounds();
         this.updatePowerUps();
 

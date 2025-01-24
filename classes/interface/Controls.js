@@ -1,10 +1,11 @@
 
 
 export class Controls {
-    constructor(player, canvas, gameState) {
+    constructor(player, canvas, gameState, inventory) {
         this.canvas = canvas;
         this.player = player;
         this.gameState = gameState;
+        this.inventory = inventory;
 
         this.keys = {};
 
@@ -40,9 +41,8 @@ export class Controls {
             }
 
             if (key === this.switchAttack) {
-                const currentAttack = this.gameState.selectedAttack.type;
-                console.log(currentAttack)
                 this.gameState.updateSelectedAttack();
+                this.inventory.setInventoryState();
             }
 
             if (key === this.jump && this.canJump) {

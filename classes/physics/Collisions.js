@@ -70,16 +70,16 @@ export class Collisions {
     handlAttackCollisions() {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             for (let j = this.attacksArr.length - 1; j >= 0; j--) {
-                if (isColliding(this.enemies[i], this.attacksArr[j])) {
-                    this.enemies[i].health -= this.attacksArr[j].damage;
-                    this.attacksArr.splice(j, 1);
-
-                    if(this.enemies[i].health <= 0) {
-                        this.enemies.splice(i, 1)
-                        i--
+                if (this.attacksArr[j].type === "projectile") {
+                    if (isColliding(this.enemies[i], this.attacksArr[j])) {
+                        this.enemies[i].health -= this.attacksArr[j].damage;
+                        this.attacksArr.splice(j, 1);
+                        if (this.enemies[i].health <= 0) {
+                            this.enemies.splice(i, 1)
+                            i--
+                        }
+                        break;
                     }
-
-                    break;
                 }
             }
         }

@@ -6,6 +6,7 @@ import { Physics } from "./classes/physics/Physics.js";
 import { SpawnActors } from "./classes/actions/SpawnActors.js";
 import { GameState } from "./classes/states/GameState.js";
 import { PathFinding } from "./classes/actions/Pathfinding.js";
+import { Inventory } from "./classes/interface/Inventory.js";
 
 const canvas = document.getElementById("root");
 const ctx = canvas.getContext("2d");
@@ -28,6 +29,7 @@ class Main {
         // initializing main classes
         this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
         this.gameState = new GameState(this.player, canvas, ctx)
+        this.inventory = new Inventory(canvas, ctx)
 
         this.spawnActors = new SpawnActors(this.gameState, canvas, ctx);
         this.collisions = new Collisions(this.gameState, canvas, ctx)
@@ -35,7 +37,7 @@ class Main {
         this.pathFinding = new PathFinding(this.gameState, canvas, ctx)
 
         this.gameMenu = new GameMenus(ctx);
-        this.controls = new Controls(this.player, canvas, this.gameState);
+        this.controls = new Controls(this.player, canvas, this.gameState, this.inventory);
 
         // gettting previous time for deltaTime
         this.previousTime = performance.now();
@@ -61,18 +63,15 @@ class Main {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // if (handler === 0) {
-        //     this.menus.drawGameOver();
-        //     this.isGameOver = true;
-        //     return;
-        // }
-
-        this.controls.updateMovement();
+        this.controls.updateMovement(); 
         this.physics.updatePhysics(deltaTime);
         this.collisions.updateCollisions()
         this.player.drawHealthBar(ctx);
+        this.spawnActors.spawnUpdate(currentTime);
         this.pathFinding.updatePathfinding();
         this.gameState.updateActors();
+        this.inventory.drawInventory();
+
 
         requestAnimationFrame(this.gameLoop);
     };

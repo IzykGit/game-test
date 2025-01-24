@@ -16,8 +16,6 @@ export class Player {
         this.playerHealth = 100;
 
         this.hasSpawned = false;
-
-        this.selectedAttack = "projectile";
     }
 
 

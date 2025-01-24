@@ -1,4 +1,3 @@
-import { Enemy } from "../actors/Enemy.js";
 import { PowerUps } from "../actors/PowerUps.js";
 
 
@@ -14,11 +13,17 @@ export class SpawnActors{
         this.enemies = enemies;
         this.attackArr = attackArr;
         this.powerUps = powerUps;
+
+        this.currentTime = 0;
+        this.intervalTime = 0;
     }
 
+    updateTimeInterval() {
+
+    }
     
     spawnEnemy() {
-        if(this.player.playerScore === 0 && this.enemies.length === 0) {
+        if(this.currentTime % 6000 === 0) {
             this.gameState.addEnemy()
         }
     }
@@ -30,7 +35,11 @@ export class SpawnActors{
     }
 
 
-    spawnUpdate() {
+    spawnUpdate(currentTime) {
         this.spawnEnemy();
+
+        
+
+        this.currentTime = currentTime;
     }
 }
