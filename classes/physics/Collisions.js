@@ -17,8 +17,8 @@ export class Collisions {
 
     handleEnemyOnEnemy() {
 
-            // add small value to prevent overlap from floating point numbers
-            const epsilon = 0.6;
+        // add small value to prevent overlap from floating point numbers
+        const epsilon = 0.6;
 
         for (let i = 0; i < this.enemies.length; i++) {
             for (let j = i + 1; j < this.enemies.length; j++) {
@@ -78,7 +78,7 @@ export class Collisions {
                         this.player.y = this.enemies[i].y - this.player.height - epsilon;
                         this.player.velocityY = 0;
 
-                        if(this.enemies[i].type === "bug") {
+                        if (this.enemies[i].type === "bug") {
                             this.bugCrush(i)
                         }
 
@@ -113,6 +113,16 @@ export class Collisions {
         }
     }
 
+    enemyAttackCollisions() {
+        for (let i = this.enemyAttacksArr.length - 1; i >= 0; i--) {
+            if (isColliding(this.player, this.enemyAttacksArr[i])) {
+                this.player.takeDamage(this.enemyAttacksArr[i].damage)
+                this.enemyAttacksArr.splice(i, 1);
+                console.log("hit player")
+            }
+        }
+    }
+
 
 
     handlePowerUpCollisions() {
@@ -137,6 +147,7 @@ export class Collisions {
         this.handlPlayerAttackCollisions();
         this.handleEnemyOnEnemy();
         this.handlePlayerOnEnemyCollisions();
+        this.enemyAttackCollisions();
         this.handlePowerUpCollisions();
     }
 

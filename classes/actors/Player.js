@@ -22,6 +22,11 @@ export class Player {
         this.playerScore += points;
     }
 
+    takeDamage(damage) {
+        if(this.playerHealth <= 0) return;
+        this.playerHealth -= damage;
+    }
+
 
     drawHealthBar(ctx) {
         const barWidth = 250;

@@ -114,7 +114,6 @@ class Main {
         });
 
         startButton.addEventListener("click", () => {
-            console.log("clicked")
             startButton.disabled = true;
             startMenu.style.display = "none";
             this.gameMenu = false;

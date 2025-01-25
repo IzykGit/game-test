@@ -1,12 +1,15 @@
 
 export class EnemyAttack {
-    constructor(x, y, direction) {
+    constructor(x, y, direction, damage) {
         this.x = x;
         this.y = y;
         this.direction = direction;
+        this.damage = damage;
 
         this.width = 15;
         this.height = 15;
+
+
 
         this.color = "grey"
 

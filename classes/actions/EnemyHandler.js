@@ -53,7 +53,7 @@ export class EnemyHandler {
     
                     let direction = this.player.x < enemy.x ? 1 : 2;
     
-                    this.gameState.addEnemyAttack(new EnemyAttack(enemy.x, enemy.y + 5, direction));
+                    this.gameState.addEnemyAttack(new EnemyAttack(enemy.x, enemy.y + 5, direction, this.enemies[i].damage));
                     enemy.lastAttackTime = this.currentTime;
                 }
             }

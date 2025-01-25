@@ -29,9 +29,6 @@ export class GameState {
     addEnemy() {
         const randomXAxisPoints = Math.random() * (this.canvas.width - 40);
         const score = this.player.playerScore;
-
-        console.log(score)
-
         const enemyKeys = Object.keys(this.enemyTypes);
         
 
