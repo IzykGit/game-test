@@ -41,29 +41,46 @@ export class EnemyHandler {
 
     updateArcherMovement() {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
-            if(this.enemies[i].type !== "archer") return;
-            if (this.currentTime - this.lastInterval >= this.archerAttackInterval && this.enemies[i].y + this.enemies[i].height === this.canvas.height) {
+            if(this.enemies[i].type === "archer") {
+                const enemy = this.enemies[i];
 
-                let direction;
-
-                if (this.player.x < this.enemies[i].x) {
-                    direction = 1;
+                if (enemy.lastAttackTime === undefined) {
+                    enemy.lastAttackTime = 0;
                 }
-                else {
-                    direction = 2;
+    
+                if (this.currentTime - enemy.lastAttackTime >= this.archerAttackInterval &&
+                    enemy.y + enemy.height === this.canvas.height) {
+    
+                    let direction = this.player.x < enemy.x ? 1 : 2;
+    
+                    this.gameState.addEnemyAttack(new EnemyAttack(enemy.x, enemy.y + 5, direction));
+                    enemy.lastAttackTime = this.currentTime;
                 }
+            }
+        }
+    }
 
-                this.gameState.addEnemyAttack(new EnemyAttack(this.enemies[i].x, this.enemies[i].y + 5, direction))
-                this.lastInterval = this.currentTime;
+    updateBugMovement() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].type === "bug") {
+                const dx = (this.player.x + this.player.width) - (this.enemies[i].x + 1);
+                const dy = this.player.y - this.enemies[i].y;
+
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 0 && this.enemies[i].velocityY === 0) {
+                    this.enemies[i].x += (dx / distance) * this.enemies[i].speed;
+
+                }
             }
         }
     }
 
 
     updatePathfinding(currentTime) {
+        this.currentTime = currentTime;
         this.updateGruntMovement();
         this.updateArcherMovement();
-
-        this.currentTime = currentTime;
+        this.updateBugMovement();
     }
 }

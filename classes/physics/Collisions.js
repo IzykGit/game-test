@@ -16,17 +16,21 @@ export class Collisions {
     }
 
     handleEnemyOnEnemy() {
+
+            // add small value to prevent overlap from floating point numbers
+            const epsilon = 0.6;
+
         for (let i = 0; i < this.enemies.length; i++) {
             for (let j = i + 1; j < this.enemies.length; j++) {
-                if (isColliding(this.enemies[i], this.enemies[j])) {
+                if (isColliding(this.enemies[i], this.enemies[j]) && this.enemies[i].type !== "bug" && this.enemies[j].type !== "bug") {
                     const collideState = collidingSide(this.enemies[i], this.enemies[j]);
 
                     switch (collideState) {
                         case "left":
-                            this.enemies[i].x = this.enemies[j].x + this.enemies[j].width;
+                            this.enemies[i].x = this.enemies[j].x + this.enemies[j].width + epsilon;
                             break;
                         case "right":
-                            this.enemies[i].x = this.enemies[j].x - this.enemies[i].width;
+                            this.enemies[i].x = this.enemies[j].x - this.enemies[i].width - epsilon;
                             break;
                         case "top":
                             this.enemies[i].y = this.enemies[j].y + this.enemies[j].height;
@@ -39,6 +43,12 @@ export class Collisions {
                 }
             }
         }
+    }
+
+
+
+    bugCrush(index) {
+        this.enemies.splice(index, 1)
     }
 
     handlePlayerOnEnemyCollisions() {
@@ -62,14 +72,23 @@ export class Collisions {
                     case "top":
                         this.player.y = this.enemies[i].y + this.enemies[i].height + epsilon;
                         this.player.velocityY = 0;
+
                         break;
                     case "bottom":
                         this.player.y = this.enemies[i].y - this.player.height - epsilon;
                         this.player.velocityY = 0;
+
+                        if(this.enemies[i].type === "bug") {
+                            this.bugCrush(i)
+                        }
+
                 }
             }
         }
     }
+
+
+
 
     handlPlayerAttackCollisions() {
         for (let i = this.enemies.length - 1; i >= 0; i--) {

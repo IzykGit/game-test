@@ -19,6 +19,8 @@ export class Enemy {
 
         this.velocityY = 0;
         this.velocityX = 0;
+
+        this.lastAttackTime = 0;
     }
 
 

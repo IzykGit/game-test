@@ -76,7 +76,6 @@ export class GameState {
 
     addEnemyAttack(attack) {
         this.enemyAttacksArr.push(attack)
-        console.log(attack)
     }
 
 
