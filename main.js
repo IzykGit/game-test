@@ -5,7 +5,7 @@ import { Player } from "./classes/actors/Player.js";
 import { Physics } from "./classes/physics/Physics.js";
 import { SpawnActors } from "./classes/actions/SpawnActors.js";
 import { GameState } from "./classes/states/GameState.js";
-import { PathFinding } from "./classes/actions/Pathfinding.js";
+import { EnemyHandler } from "./classes/actions/EnemyHandler.js";
 import { Inventory } from "./classes/interface/Inventory.js";
 
 const canvas = document.getElementById("root");
@@ -34,7 +34,7 @@ class Main {
         this.spawnActors = new SpawnActors(this.gameState, canvas, ctx);
         this.collisions = new Collisions(this.gameState, canvas, ctx)
         this.physics = new Physics(this.gameState, canvas, ctx)
-        this.pathFinding = new PathFinding(this.gameState, canvas, ctx)
+        this.enemyHandler = new EnemyHandler(this.gameState, canvas, ctx)
 
         this.gameMenu = new GameMenus(ctx);
         this.controls = new Controls(this.player, canvas, this.gameState, this.inventory);
@@ -68,7 +68,7 @@ class Main {
         this.collisions.updateCollisions()
         this.player.drawHealthBar(ctx);
         this.spawnActors.spawnUpdate(currentTime);
-        this.pathFinding.updatePathfinding();
+        this.enemyHandler.updatePathfinding(currentTime);
         this.gameState.updateActors();
         this.inventory.drawInventory();
 

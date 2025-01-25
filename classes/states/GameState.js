@@ -10,6 +10,7 @@ export class GameState {
         this.enemies = [];
         this.attacksArr = [];
         this.powerUps = [];
+        this.enemyAttacksArr = [];
 
         this.attackTypes = {};
         this.enemyTypes = {};
@@ -32,10 +33,31 @@ export class GameState {
         console.log(score)
 
         const enemyKeys = Object.keys(this.enemyTypes);
-        console.log({...this.enemyTypes[enemyKeys[0]]})
+        
 
-        if(score < 300){
+        if(score > 1200) {
+            const randomEnemy = Math.floor(Math.random() * 5)
+            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            return;
+        }
+        else if(score > 900) {
+            const randomEnemy = Math.floor(Math.random() * 4)
+            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            return;
+        }
+        else if(score > 600) {
+            const randomEnemy = Math.floor(Math.random() * 3)
+            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            return;
+        }
+        else if(score > 300) {
+            const randomEnemy = Math.floor(Math.random() * 2)
+            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            return;
+        }
+        else {
             this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[0]]}))
+            return;
         }
     }
 
@@ -50,6 +72,11 @@ export class GameState {
 
     addPowerUp(powerUp) {
         this.powerUps.push(powerUp)
+    }
+
+    addEnemyAttack(attack) {
+        this.enemyAttacksArr.push(attack)
+        console.log(attack)
     }
 
 
@@ -142,6 +169,13 @@ export class GameState {
             if(this.attacksArr[i].type === "bomb") {
                 this.attacksArr[i].drawBombTimer();
             }
+        }
+
+        for (let i = 0; i < this.enemyAttacksArr.length; i++) {
+            this.ctx.strokeStyle = "black"
+            this.ctx.fillStyle = this.enemyAttacksArr[i].color;
+            this.ctx.fillRect(this.enemyAttacksArr[i].x, this.enemyAttacksArr[i].y, this.enemyAttacksArr[i].width, this.enemyAttacksArr[i].height)
+            this.ctx.strokeRect(this.enemyAttacksArr[i].x, this.enemyAttacksArr[i].y, this.enemyAttacksArr[i].width, this.enemyAttacksArr[i].height)
         }
     }
 

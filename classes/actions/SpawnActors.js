@@ -15,7 +15,7 @@ export class SpawnActors {
 
         this.currentTime = 0; 
         this.lastSpawnTime = 0; 
-        this.enemySpawnInterval = 3000; 
+        this.enemySpawnInterval = 2000; 
     }
 
     spawnEnemy() {

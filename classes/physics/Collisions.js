@@ -6,12 +6,13 @@ export class Collisions {
         this.canvas = canvas;
         this.ctx = ctx;
 
-        const { player, enemies, attacksArr, powerUps } = gameState;
+        const { player, enemies, attacksArr, powerUps, enemyAttacksArr } = gameState;
 
         this.player = player;
         this.enemies = enemies;
         this.attacksArr = attacksArr;
         this.powerUps = powerUps;
+        this.enemyAttacksArr = enemyAttacksArr
     }
 
     handleEnemyOnEnemy() {
@@ -42,32 +43,35 @@ export class Collisions {
 
     handlePlayerOnEnemyCollisions() {
 
+        // add small value to prevent overlap from floating point numbers
+        const epsilon = 0.6;
+
+
+
         for (let i = 0; i < this.enemies.length; i++) {
             if (isColliding(this.player, this.enemies[i])) {
                 const collideState = collidingSide(this.player, this.enemies[i]);
 
                 switch (collideState) {
                     case "left":
-                        this.player.x = this.enemies[i].x + this.enemies[i].width;
-                        this.player.velocityX = 0;
+                        this.player.x = this.enemies[i].x + this.enemies[i].width + epsilon;
                         break;
                     case "right":
-                        this.player.x = this.enemies[i].x - this.player.width;
-                        this.player.velocityX = 0;
+                        this.player.x = this.enemies[i].x - this.player.width - epsilon;
                         break;
                     case "top":
-                        this.player.y = this.enemies[i].y + this.enemies[i].height;
+                        this.player.y = this.enemies[i].y + this.enemies[i].height + epsilon;
                         this.player.velocityY = 0;
                         break;
                     case "bottom":
-                        this.player.y = this.enemies[i].y - this.player.height;
+                        this.player.y = this.enemies[i].y - this.player.height - epsilon;
                         this.player.velocityY = 0;
                 }
             }
         }
     }
 
-    handlAttackCollisions() {
+    handlPlayerAttackCollisions() {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             for (let j = this.attacksArr.length - 1; j >= 0; j--) {
                 if (this.attacksArr[j].type === "projectile") {
@@ -111,7 +115,7 @@ export class Collisions {
 
 
     updateCollisions() {
-        this.handlAttackCollisions();
+        this.handlPlayerAttackCollisions();
         this.handleEnemyOnEnemy();
         this.handlePlayerOnEnemyCollisions();
         this.handlePowerUpCollisions();

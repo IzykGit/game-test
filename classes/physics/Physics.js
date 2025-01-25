@@ -1,12 +1,13 @@
 export class Physics {
     constructor(gameState, canvas) {
         this.canvas = canvas;
-        const { player, enemies, attacksArr, powerUps } = gameState;
+        const { player, enemies, attacksArr, powerUps, enemyAttacksArr } = gameState;
 
         this.player = player;
         this.enemies = enemies;
         this.attacksArr = attacksArr;
         this.powerUps = powerUps;
+        this.enemyAttacksArr = enemyAttacksArr;
 
         this.frictionConstant = 0.2;
         this.gravityConstant = 4000;
@@ -138,12 +139,28 @@ export class Physics {
         }
     }
 
+    applyEnemyAttackMechanics() {
+        for(let i = 0; i < this.enemyAttacksArr.length; i++) {
+            if (this.enemyAttacksArr[i].direction === 1) {
+                this.enemyAttacksArr[i].x -= this.enemyAttacksArr[i].speed * this.deltaTime;
+            }
+            if (this.enemyAttacksArr[i].direction === 2) {
+                this.enemyAttacksArr[i].x += this.enemyAttacksArr[i].speed * this.deltaTime;
+            }
+        }
+    }
+
 
     outOfBounds() {
-        if (this.attacksArr.length === 0) return;
         for (let i = this.attacksArr.length - 1; i >= 0; i--) {
             if (this.attacksArr[i].x < 0 || this.attacksArr[i].x + this.attacksArr[i].width >= this.canvas.width) {
                 this.attacksArr.splice(i, 1);
+            }
+        }
+
+        for (let i = this.enemyAttacksArr.length - 1; i >= 0; i--) {
+            if (this.enemyAttacksArr[i].x < 0 || this.enemyAttacksArr[i].x + this.enemyAttacksArr[i].width >= this.canvas.width) {
+                this.enemyAttacksArr.splice(i, 1);
             }
         }
     }
@@ -165,6 +182,7 @@ export class Physics {
         this.applyInertia();
         this.applyProjectileMechanics();
         this.applyBombMechanics();
+        this.applyEnemyAttackMechanics();
         this.outOfBounds();
         this.updatePowerUps();
 

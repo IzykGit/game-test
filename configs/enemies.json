@@ -1,35 +1,42 @@
 {
     "grunt": {
+        "type": "grunt",
         "health": 100,
         "damage": 10,
-        "speed": 10,
+        "speed": 3,
         "width": 25,
         "height": 50,
         "pointValue": 30,
         "color": "orange"
     },
     "archer": {
+        "type": "archer",
         "health": 125,
         "damage": 20,
-        "speed": 10,
+        "speed": 5,
         "width": 25,
         "height": 50,
-        "pointValue": 50
+        "pointValue": 50,
+        "color": "#FFF700"
     },
     "bug": {
-        "health": 50,
-        "damage": 10,
-        "speed": 20,
-        "width": 10,
+        "type": "bug",
+        "health": 10,
+        "damage": 6,
+        "speed": 10,
+        "width": 40,
         "height": 15,
-        "pointValue": 20
+        "pointValue": 20,
+        "color": "#15D700"
     },
     "heavy": {
-        "health": 200,
+        "type": "heavy",
+        "health": 300,
         "damage": 50,
-        "speed": 5,
+        "speed": 1.5,
         "width": 40,
         "height": 80,
-        "pointValue": 75
+        "pointValue": 75,
+        "color": "#2100A5"
     }
 }
