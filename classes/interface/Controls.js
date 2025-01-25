@@ -52,10 +52,15 @@ export class Controls {
 
             if (key === this.attackLeft && this.canAttack && !this.isCrouching) {
                 this.keys[key] = true;
+                this.gameState.addAttack(1);
+                this.canAttack = false;
             }
 
             if (key === this.attackRight && this.canAttack && !this.isCrouching) {
                 this.keys[key] = true;
+                this.gameState.addAttack(2);
+                this.canAttack = false;
+                
             }
         });
 
@@ -102,16 +107,6 @@ export class Controls {
         if (this.keys[this.crouch] && !this.isCrouching) {
             this.player.height = this.player.height / 2;
             this.isCrouching = true;
-        }
-
-        if (this.keys[this.attackLeft] && this.canAttack) {
-            this.gameState.addAttack(1);
-            this.canAttack = false;
-        }
-
-        if (this.keys[this.attackRight] && this.canAttack) {
-            this.gameState.addAttack(2);
-            this.canAttack = false;
         }
 
 

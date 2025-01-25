@@ -27,9 +27,9 @@ class Main {
         this.addEventListeners();
 
         // initializing main classes
-        this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue");
+        this.player = new Player(50, window.innerHeight - 52, 25, 50, "blue", ctx);
         this.gameState = new GameState(this.player, canvas, ctx)
-        this.inventory = new Inventory(canvas, ctx)
+        this.inventory = new Inventory(this.player, canvas, ctx)
 
         this.spawnActors = new SpawnActors(this.gameState, canvas, ctx);
         this.collisions = new Collisions(this.gameState, canvas, ctx)
@@ -66,7 +66,7 @@ class Main {
         this.controls.updateMovement(); 
         this.physics.updatePhysics(deltaTime);
         this.collisions.updateCollisions()
-        this.player.drawHealthBar(ctx);
+        this.player.updatePlayer(currentTime);
         this.spawnActors.spawnUpdate(currentTime);
         this.enemyHandler.updatePathfinding(currentTime);
         this.gameState.updateActors();

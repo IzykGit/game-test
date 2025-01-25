@@ -1,4 +1,3 @@
-import { Attack } from "../actors/Attack.js";
 import { Enemy } from "../actors/Enemy.js";
 
 export class GameState {
@@ -63,8 +62,18 @@ export class GameState {
             this.updateSelectedAttack()
         }
 
-        const attack = new Attack(this.player.x, this.player.y + 15, direction, this.selectedAttack, this.ctx);
-        this.attacksArr.push(attack);
+        if(this.selectedAttack.type === "projectile" && this.player.projectileAmmo > 0) {
+            const attack = this.player.projectileAttack(direction, this.selectedAttack)
+            this.attacksArr.push(attack);
+            return;
+        }
+        else if (this.selectedAttack.type === "bomb" && this.player.bombAmmo > 0) {
+            const attack = this.player.bombAttack(direction, this.selectedAttack)
+            this.attacksArr.push(attack);
+            return;
+        }
+
+
     }
 
     addPowerUp(powerUp) {

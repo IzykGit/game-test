@@ -1,7 +1,8 @@
 
 
 export class Inventory {
-    constructor(canvas, ctx) {
+    constructor(player, canvas, ctx) {
+        this.player = player;
         this.canvas = canvas;
         this.ctx = ctx;
 
@@ -21,14 +22,22 @@ export class Inventory {
     }
 
     drawInventory() {
+        this.ctx.fillStyle = "grey"
+        this.ctx.font = "30px serif";
+        this.ctx.fillText(`Projectiles: ${this.player.projectileAmmo}`, 50, 150);
+        this.ctx.font = "30px serif";
+        this.ctx.fillText(`Bombs: ${this.player.bombAmmo}`, 50, 200);
+
         if(this.selectedAttack === "projectiles") {
+            this.ctx.fillStyle = "blue"
             this.ctx.font = "30px serif";
-            this.ctx.fillText("Projectiles", 50, 150);
+            this.ctx.fillText(`Projectiles: ${this.player.projectileAmmo}`, 50, 150);
         }
         
         if(this.selectedAttack === "bombs") {
+            this.ctx.fillStyle = "blue"
             this.ctx.font = "30px serif";
-            this.ctx.fillText("Bombs", 50, 150);
+            this.ctx.fillText(`Bombs: ${this.player.bombAmmo}`, 50, 200);
         }
         
     }
