@@ -68,7 +68,7 @@ class Main {
         this.collisions.updateCollisions()
         this.player.updatePlayer(currentTime);
         this.spawnActors.spawnUpdate(currentTime);
-        this.enemyHandler.updatePathfinding(currentTime);
+        this.enemyHandler.updatePathfinding(currentTime, deltaTime);
         this.gameState.updateActors();
         this.inventory.drawInventory();
 

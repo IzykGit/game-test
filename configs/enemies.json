@@ -21,10 +21,10 @@
     },
     "bug": {
         "type": "bug",
-        "health": 10,
+        "health": 40,
         "damage": 6,
         "speed": 10,
-        "width": 40,
+        "width": 50,
         "height": 15,
         "pointValue": 20,
         "color": "#15D700"

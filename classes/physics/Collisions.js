@@ -22,7 +22,7 @@ export class Collisions {
 
         for (let i = 0; i < this.enemies.length; i++) {
             for (let j = i + 1; j < this.enemies.length; j++) {
-                if (isColliding(this.enemies[i], this.enemies[j]) && this.enemies[i].type !== "bug" && this.enemies[j].type !== "bug") {
+                if (isColliding(this.enemies[i], this.enemies[j])) {
                     const collideState = collidingSide(this.enemies[i], this.enemies[j]);
 
                     switch (collideState) {

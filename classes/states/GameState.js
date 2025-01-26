@@ -29,30 +29,29 @@ export class GameState {
         const randomXAxisPoints = Math.random() * (this.canvas.width - 40);
         const score = this.player.playerScore;
         const enemyKeys = Object.keys(this.enemyTypes);
+
+        const randomEnemy = Math.floor(Math.random() * 5)
+        const enemyParams = new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]})
         
 
         if(score > 1200) {
-            const randomEnemy = Math.floor(Math.random() * 5)
-            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            this.enemies.push(enemyParams)
             return;
         }
         else if(score > 900) {
-            const randomEnemy = Math.floor(Math.random() * 4)
-            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            this.enemies.push(enemyParams)
             return;
         }
         else if(score > 600) {
-            const randomEnemy = Math.floor(Math.random() * 3)
-            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            this.enemies.push(enemyParams)
             return;
         }
         else if(score > 300) {
-            const randomEnemy = Math.floor(Math.random() * 2)
-            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]}))
+            this.enemies.push(enemyParams)
             return;
         }
         else {
-            this.enemies.push(new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[0]]}))
+            this.enemies.push(enemyParams)
             return;
         }
     }
@@ -152,6 +151,7 @@ export class GameState {
         this.ctx.strokeRect(this.player.x, this.player.y, this.player.width, this.player.height)
 
         for (let i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].drawHealthBar(this.ctx);
             this.ctx.strokeStyle = "black"
             this.ctx.fillStyle = this.enemies[i].color;
             this.ctx.fillRect(this.enemies[i].x, this.enemies[i].y, this.enemies[i].width, this.enemies[i].height);

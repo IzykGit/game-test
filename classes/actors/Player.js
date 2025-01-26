@@ -30,7 +30,7 @@ export class Player {
         this.lastProjectileInterval = 0;
         this.lastBombInterval = 0;
 
-        this.projectileAmmoInterval = 5000;
+        this.projectileAmmoInterval = 1000;
         this.bombAmmoInterval = 3000;
     }
 
@@ -62,12 +62,16 @@ export class Player {
     addProjectileAmmo() {
         if(this.currentTime - this.lastProjectileInterval >= this.projectileAmmoInterval && this.projectileAmmo < 10) {
             this.projectileAmmo += 1;
+
+            this.lastProjectileInterval = this.currentTime;
         }
     }
 
     addBombAmmo() {
         if(this.currentTime - this.lastBombInterval >= this.bombAmmoInterval && this.bombAmmo < 5) {
             this.bombAmmo += 1;
+
+            this.bombAmmo = this.currentTime;
         }
     }
 

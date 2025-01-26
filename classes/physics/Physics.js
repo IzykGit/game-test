@@ -28,6 +28,11 @@ export class Physics {
                 this.enemies[i].velocityY += this.gravityConstant * this.deltaTime;
                 this.enemies[i].y += this.enemies[i].velocityY * this.deltaTime;
 
+                if(this.enemies[i].y + this.enemies[i].height >= this.canvas.height / 2 && this.enemies[i].type === "bug") {
+                    this.enemies[i].y = (this.canvas.height / 2) - this.enemies[i].height;
+                    this.enemies.velocityY = 0;
+                }
+
                 if (this.enemies[i].y + this.enemies[i].height >= this.canvas.height) {
                     this.enemies[i].y = this.canvas.height - this.enemies[i].height;
                     this.enemies[i].velocityY = 0;

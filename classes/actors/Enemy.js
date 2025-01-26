@@ -8,6 +8,7 @@ export class Enemy {
 
         this.type = type;
         this.health = health;
+        this.maxHealth = health;
         this.damage = damage;
         this.speed = speed;
         this.pointValue = pointValue;
@@ -26,5 +27,18 @@ export class Enemy {
 
     takeDamage(damage) {
         this.health -= damage;
+    }
+
+
+    drawHealthBar(ctx) {
+        const barWidth = this.width * 2;
+        const barHeight = 10;
+        const healthPercentage = this.health / this.maxHealth;
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(this.x - this.width / 2, this.y - 25, barWidth, barHeight);
+
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x - this.width / 2, this.y - 25, barWidth * healthPercentage, barHeight);
     }
 }

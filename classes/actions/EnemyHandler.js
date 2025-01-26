@@ -16,6 +16,7 @@ export class EnemyHandler {
         this.powerUps = powerUps;
         this.enemyAttacksArr = enemyAttacksArr;
 
+        this.deltaTime = 0;
 
         this.currentTime = 0;
         this.lastInterval = 0;
@@ -63,22 +64,25 @@ export class EnemyHandler {
     updateBugMovement() {
         for (let i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].type === "bug") {
-                const dx = (this.player.x + this.player.width) - (this.enemies[i].x + 1);
-                const dy = this.player.y - this.enemies[i].y;
+                this.enemies[i].y = this.canvas.height / 2;
+    
+                const playerCenterX = this.player.x + this.player.width / 2;
+                const bugCenterX = this.enemies[i].x + this.enemies[i].width / 2;
+                const dx = playerCenterX - bugCenterX;
+    
 
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance > 0 && this.enemies[i].velocityY === 0) {
-                    this.enemies[i].x += (dx / distance) * this.enemies[i].speed;
-
+                if (Math.abs(dx) > 1) { 
+                    const direction = dx > 0 ? 2 : -2;
+                    this.enemies[i].velocityX += direction * this.enemies[i].speed * this.deltaTime;
                 }
             }
         }
     }
 
 
-    updatePathfinding(currentTime) {
+    updatePathfinding(currentTime, deltaTime) {
         this.currentTime = currentTime;
+        this.deltaTime = deltaTime;
         this.updateGruntMovement();
         this.updateArcherMovement();
         this.updateBugMovement();
