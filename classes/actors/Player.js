@@ -14,7 +14,7 @@ export class Player {
         this.velocityY = 0;
         this.velocityX = 0;
 
-        this.playerScore = 1200;
+        this.playerScore = 0;
 
         this.playerHealth = 100;
 
