@@ -30,8 +30,8 @@ export class Player {
         this.lastProjectileInterval = 0;
         this.lastBombInterval = 0;
 
-        this.projectileAmmoInterval = 1000;
-        this.bombAmmoInterval = 3000;
+        this.projectileAmmoInterval = 900;
+        this.bombAmmoInterval = 1000;
     }
 
     addPoints(points) {
@@ -52,8 +52,9 @@ export class Player {
     }
 
     bombAttack(direction, selectedAttack) {
-        this.bombAmmo -= 1;
+        if(this.bombAmmo <= 0) return
 
+        this.bombAmmo -= 1;
         const attack = new Attack(this.x, this.y + 15, direction, selectedAttack, this.ctx);
         return attack;
     }
@@ -70,8 +71,7 @@ export class Player {
     addBombAmmo() {
         if(this.currentTime - this.lastBombInterval >= this.bombAmmoInterval && this.bombAmmo < 5) {
             this.bombAmmo += 1;
-
-            this.bombAmmo = this.currentTime;
+            this.lastBombInterval = this.currentTime;
         }
     }
 

@@ -24,20 +24,20 @@ export class Inventory {
     drawInventory() {
         this.ctx.fillStyle = "grey"
         this.ctx.font = "30px serif";
-        this.ctx.fillText(`Projectiles: ${this.player.projectileAmmo}`, 50, 150);
+        this.ctx.fillText(`Projectiles: ${this.player.projectileAmmo}/10`, 50, 150);
         this.ctx.font = "30px serif";
-        this.ctx.fillText(`Bombs: ${this.player.bombAmmo}`, 50, 200);
+        this.ctx.fillText(`Bombs: ${this.player.bombAmmo}/5`, 50, 200);
 
         if(this.selectedAttack === "projectiles") {
             this.ctx.fillStyle = "blue"
             this.ctx.font = "30px serif";
-            this.ctx.fillText(`Projectiles: ${this.player.projectileAmmo}`, 50, 150);
+            this.ctx.fillText(`Projectiles: ${this.player.projectileAmmo}/10`, 50, 150);
         }
         
         if(this.selectedAttack === "bombs") {
             this.ctx.fillStyle = "blue"
             this.ctx.font = "30px serif";
-            this.ctx.fillText(`Bombs: ${this.player.bombAmmo}`, 50, 200);
+            this.ctx.fillText(`Bombs: ${this.player.bombAmmo}/5`, 50, 200);
         }
         
     }

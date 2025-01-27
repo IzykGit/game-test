@@ -2,7 +2,7 @@
   "projectile": {
     "type": "projectile",
     "damage": 20,
-    "speed": 800,
+    "speed": 900,
     "width": 15,
     "height": 15,
     "color": "grey"
