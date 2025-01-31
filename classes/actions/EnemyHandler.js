@@ -24,9 +24,9 @@ export class EnemyHandler {
     }
 
 
-    updateGruntMovement() {
+    updateMovement() {
         for (let i = 0; i < this.enemies.length; i++) {
-            if (this.enemies[i].type === "grunt") {
+            if (this.enemies[i].type !== "archer") {
                 const dx = (this.player.x + this.player.width) - (this.enemies[i].x + 1);
                 const dy = this.player.y - this.enemies[i].y;
 
@@ -61,30 +61,11 @@ export class EnemyHandler {
         }
     }
 
-    updateBugMovement() {
-        for (let i = 0; i < this.enemies.length; i++) {
-            if (this.enemies[i].type === "bug") {
-                this.enemies[i].y = this.canvas.height / 2;
-    
-                const playerCenterX = this.player.x + this.player.width / 2;
-                const bugCenterX = this.enemies[i].x + this.enemies[i].width / 2;
-                const dx = playerCenterX - bugCenterX;
-    
-
-                if (Math.abs(dx) > 1) { 
-                    const direction = dx > 0 ? 2 : -2;
-                    this.enemies[i].velocityX += direction * this.enemies[i].speed * this.deltaTime;
-                }
-            }
-        }
-    }
-
 
     updatePathfinding(currentTime, deltaTime) {
         this.currentTime = currentTime;
         this.deltaTime = deltaTime;
-        this.updateGruntMovement();
+        this.updateMovement();
         this.updateArcherMovement();
-        this.updateBugMovement();
     }
 }

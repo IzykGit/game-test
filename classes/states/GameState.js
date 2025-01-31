@@ -30,7 +30,7 @@ export class GameState {
         const score = this.player.playerScore;
         const enemyKeys = Object.keys(this.enemyTypes);
 
-        const randomEnemy = Math.floor(Math.random() * 5)
+        const randomEnemy = Math.floor(Math.random() * 4)
         const enemyParams = new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]})
         
 
@@ -184,10 +184,17 @@ export class GameState {
         }
     }
 
+    drawUI() {
+        this.ctx.fillStyle = "blue"
+        this.ctx.font = "30px serif";
+        this.ctx.fillText(`Enemies: ${this.enemies.length}`, 50, 250);
+    }
+
 
 
 
     updateActors() {
         this.drawActors();
+        this.drawUI();
     }
 }
