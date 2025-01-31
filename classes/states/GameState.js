@@ -12,7 +12,6 @@ export class GameState {
         this.enemyAttacksArr = [];
 
         this.attackTypes = {};
-        this.enemyTypes = {};
         this.powerUpTypes = {};
 
         this.selectedAttack = {};
@@ -25,35 +24,8 @@ export class GameState {
     }
 
 
-    addEnemy() {
-        const randomXAxisPoints = Math.random() * (this.canvas.width - 40);
-        const score = this.player.playerScore;
-        const enemyKeys = Object.keys(this.enemyTypes);
-
-        const randomEnemy = Math.floor(Math.random() * 4)
-        const enemyParams = new Enemy(randomXAxisPoints, 0, {...this.enemyTypes[enemyKeys[randomEnemy]]})
-        
-
-        if(score > 1200) {
-            this.enemies.push(enemyParams)
-            return;
-        }
-        else if(score > 900) {
-            this.enemies.push(enemyParams)
-            return;
-        }
-        else if(score > 600) {
-            this.enemies.push(enemyParams)
-            return;
-        }
-        else if(score > 300) {
-            this.enemies.push(enemyParams)
-            return;
-        }
-        else {
-            this.enemies.push(enemyParams)
-            return;
-        }
+    addEnemy(newEnemy) {
+        this.enemies.push(newEnemy)
     }
 
     addAttack(direction) {
@@ -86,7 +58,6 @@ export class GameState {
 
     async init() {
         await this.getAttackTypes();
-        await this.getEnemyTypes();
         // await this.getPowerUpTypes();
 
         this.initializeAttackSelection();
@@ -132,11 +103,6 @@ export class GameState {
     async getAttackTypes() {
         const response = await fetch("../configs/attacks.json");
         this.attackTypes = await response.json();
-    }
-
-    async getEnemyTypes() {
-        const response = await fetch("../configs/enemies.json");
-        this.enemyTypes = await response.json()
     }
 
     // async getPowerUpTypes () {
@@ -187,7 +153,7 @@ export class GameState {
     drawUI() {
         this.ctx.fillStyle = "blue"
         this.ctx.font = "30px serif";
-        this.ctx.fillText(`Enemies: ${this.enemies.length}`, 50, 250);
+        this.ctx.fillText(`Score: ${this.player.playerScore}`, this.canvas.width - 150, 75);
     }
 
 

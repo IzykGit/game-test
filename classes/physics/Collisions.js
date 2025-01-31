@@ -19,7 +19,6 @@ export class Collisions {
 
         // add small value to prevent overlap from floating point numbers
         const epsilon = 0.6;
-
         for (let i = 0; i < this.enemies.length; i++) {
             for (let j = i + 1; j < this.enemies.length; j++) {
                 if (isColliding(this.enemies[i], this.enemies[j])) {
@@ -77,10 +76,6 @@ export class Collisions {
                     case "bottom":
                         this.player.y = this.enemies[i].y - this.player.height - epsilon;
                         this.player.velocityY = 0;
-
-                        if (this.enemies[i].type === "bug") {
-                            this.bugCrush(i)
-                        }
 
                 }
             }

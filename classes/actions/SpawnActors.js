@@ -1,3 +1,4 @@
+import { Enemy } from "../actors/Enemy.js";
 import { PowerUps } from "../actors/PowerUps.js";
 
 export class SpawnActors {
@@ -6,26 +7,41 @@ export class SpawnActors {
         this.canvas = canvas;
         this.ctx = ctx;
 
-        const { player, enemies, attackArr, powerUps } = gameState;
+        const { player } = gameState;
 
         this.player = player;
-        this.enemies = enemies;
-        this.attackArr = attackArr;
-        this.powerUps = powerUps;
 
-        this.currentTime = 0; 
-        this.lastSpawnTime = 0; 
-        this.enemySpawnInterval = 3000; 
+        this.enemyTypes = {};
+
+        this.init();
+
+        this.currentTime = 0;
+        this.lastSpawnTime = 0;
+        this.enemySpawnInterval = 5000;
+    }
+
+    async getEnemyTypes() {
+        const response = await fetch("../configs/enemies.json");
+        this.enemyTypes = await response.json()
+    }
+
+    async init() {
+        await this.getEnemyTypes();
     }
 
     spawnEnemy() {
-        this.gameState.addEnemy();
+        const randomXAxisPoints = Math.random() * (this.canvas.width - 40);
+        const enemyKeys = Object.keys(this.enemyTypes);
+
+        const randomEnemy = Math.floor(Math.random() * 4)
+        const newEnemy = new Enemy(randomXAxisPoints, 0, { ...this.enemyTypes[enemyKeys[randomEnemy]] })
+        this.gameState.addEnemy(newEnemy);
     }
 
     spawnPowerUp(type, color) {
         const x = Math.random() * (this.canvas.width - 40);
         const powerUp = new PowerUps(x, -30, type, color);
-        this.powerUps.push(powerUp); 
+        this.powerUps.push(powerUp);
     }
 
     spawnUpdate(currentTime) {
@@ -34,7 +50,7 @@ export class SpawnActors {
 
         if (this.currentTime - this.lastSpawnTime >= this.enemySpawnInterval) {
             this.spawnEnemy();
-            this.lastSpawnTime = this.currentTime; 
+            this.lastSpawnTime = this.currentTime;
         }
     }
 }
